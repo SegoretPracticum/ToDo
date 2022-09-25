@@ -8,15 +8,23 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TodoNotesActivity extends AppCompatActivity {
+    private RecyclerView notesView;
     TextView note;
     public static final String NEW_NOTE = "NEW_NOTE";
+
+    //private final RecyclerView.Adapter adapter = new ItemAdapter(this)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        notesView = findViewById(R.id.resView);
         Button addNote = findViewById(R.id.addNote);
         note = findViewById(R.id.note);
         ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
