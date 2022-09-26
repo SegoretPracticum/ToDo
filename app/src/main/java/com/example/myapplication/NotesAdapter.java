@@ -13,16 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
-    private LayoutInflater inflater;
+
     private List<TodoNotes> notesMassive;
-    NotesAdapter (Context context,List<TodoNotes> notesMassive) {
+    NotesAdapter (ArrayList<TodoNotes> notesMassive) {
         this.notesMassive = notesMassive;
-        this.inflater=LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.notesview, parent, false);
         return new ViewHolder(view);
     }

@@ -8,28 +8,39 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class TodoNotesActivity extends AppCompatActivity {
     private RecyclerView notesView;
-    TextView note;
+    private TextView note;
     public static final String NEW_NOTE = "NEW_NOTE";
+    public static final String ADD_NOTE = "note";
+    private final ArrayList<TodoNotes> todoNotes= new ArrayList<>();
 
-    //private final RecyclerView.Adapter adapter = new ItemAdapter(this)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         notesView = findViewById(R.id.resView);
+        NotesAdapter notesAdapter = new NotesAdapter(todoNotes);
+        notesView.setLayoutManager(new LinearLayoutManager(this));
+        notesView.setAdapter(notesAdapter);
         Button addNote = findViewById(R.id.addNote);
         note = findViewById(R.id.note);
+
+        // Test drive recyclerview
+        todoNotes.add(new TodoNotes("qqqqqqqq"));
+        todoNotes.add(new TodoNotes("wwwwwwwww"));
+        todoNotes.add(new TodoNotes("eeeeeeee"));
+        // Test drive recyclerview
+
         ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             Intent intent = result.getData();
-            assert intent != null;
             String accessMessage = intent.getStringExtra(NEW_NOTE);
             addNote.setText(accessMessage);
         });
@@ -52,7 +63,9 @@ public class TodoNotesActivity extends AppCompatActivity {
         if (data == null) {
             return;
         }
-        String note1 = data.getStringExtra("note");
+
+        String note1 = data.getStringExtra(ADD_NOTE);
         note.setText(note1);
+
     }
 }

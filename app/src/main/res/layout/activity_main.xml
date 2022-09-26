@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".TodoNotesActivity">
 
-
-
     <Button
         android:id="@+id/addNote"
         android:layout_width="wrap_content"
@@ -22,18 +20,18 @@
         android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="@dimen/TVnoteMargStart"
+        android:layout_marginTop="@dimen/TVnoteMargTop"
         android:text="@string/note"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:focusable="true" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="319dp"
+        android:layout_width="@dimen/RVwight"
         android:id="@+id/resView"
-        android:layout_height="433dp"
-        android:layout_marginTop="76dp"
+        android:layout_height="@dimen/RVheight"
+        android:layout_marginTop="@dimen/RVmarginTop"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp"
         tools:ignore="MissingConstraints" />
