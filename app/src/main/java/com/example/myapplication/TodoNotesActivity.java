@@ -10,8 +10,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class TodoNotesActivity extends AppCompatActivity {
-    TextView note;
+    private TextView note;
     public static final String NEW_NOTE = "NEW_NOTE";
+    public static final String NOTE = "note";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +22,6 @@ public class TodoNotesActivity extends AppCompatActivity {
         note = findViewById(R.id.note);
         ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             Intent intent = result.getData();
-            assert intent != null;
             String accessMessage = intent.getStringExtra(NEW_NOTE);
             addNote.setText(accessMessage);
         });
@@ -44,7 +44,7 @@ public class TodoNotesActivity extends AppCompatActivity {
         if (data == null) {
             return;
         }
-        String note1 = data.getStringExtra("note");
+        String note1 = data.getStringExtra(NOTE);
         note.setText(note1);
     }
 }
