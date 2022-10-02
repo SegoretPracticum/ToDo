@@ -2,9 +2,9 @@
 <resources>
     <dimen name="TVnoteMargStart">36dp</dimen>
     <dimen name="TVnoteMargTop">48dp</dimen>
-    <dimen name="RVwight">319dp</dimen>
-    <dimen name="RVheight">433dp</dimen>
-    <dimen name="RVmarginTop">76dp</dimen>
+    <dimen name="RVWight">319dp</dimen>
+    <dimen name="RVHeight">433dp</dimen>
+    <dimen name="RVMarginTop">76dp</dimen>
     <dimen name="ETenterNoteMargStart">80dp</dimen>
     <dimen name="ETenterNoteMargTop">56dp</dimen>
     <dimen name="TVnotesViewSize">20sp</dimen>

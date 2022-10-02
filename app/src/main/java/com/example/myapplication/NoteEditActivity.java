@@ -1,28 +1,28 @@
 package com.example.myapplication;
-import static com.example.myapplication.TodoNotesActivity.ADD_NOTE;
 import static com.example.myapplication.TodoNotesActivity.NEW_NOTE;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.view.View;
+
 import android.widget.EditText;
 
 public class NoteEditActivity extends AppCompatActivity {
-
-    private EditText enterNote;
+    private Editable noteToRv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-        enterNote = (EditText) findViewById(R.id.enterNote);
-        enterNote.setText(getIntent().getStringExtra(NEW_NOTE));
+        EditText enterNote = findViewById(R.id.enterNote);
+        String newNote = getIntent().getStringExtra(NEW_NOTE);
+        enterNote.setText(newNote);
+        noteToRv = enterNote.getText();
 
         enterNote.setOnClickListener(view -> {
-            Intent intent = new Intent();
-            Editable text = enterNote.getText();
-            intent.putExtra(ADD_NOTE, text.toString());
+            TodoNotes newTodo = new TodoNotes(noteToRv.toString());
+            Intent intent = new Intent(NoteEditActivity.this, TodoNotesActivity.class);
+            intent.putExtra(NEW_NOTE, newTodo);
             setResult(RESULT_OK, intent);
             finish();
         });

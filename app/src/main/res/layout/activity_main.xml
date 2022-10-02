@@ -15,23 +15,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/note"
-        android:clickable="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/TVnoteMargStart"
-        android:layout_marginTop="@dimen/TVnoteMargTop"
-        android:text="@string/note"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:focusable="true" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="@dimen/RVwight"
+        android:layout_width="@dimen/RVWight"
         android:id="@+id/resView"
-        android:layout_height="@dimen/RVheight"
-        android:layout_marginTop="@dimen/RVmarginTop"
+        android:layout_height="@dimen/RVHeight"
+        android:layout_marginTop="@dimen/RVMarginTop"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp"
         tools:ignore="MissingConstraints" />
