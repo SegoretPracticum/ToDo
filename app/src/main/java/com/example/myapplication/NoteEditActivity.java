@@ -20,7 +20,7 @@ public class NoteEditActivity extends AppCompatActivity {
 
         enterNote.setOnClickListener(view -> {
             TodoNotes newTodo = new TodoNotes(enterNote.getText().toString());
-            Intent intent = new Intent(this, NoteEditActivity.class);
+            Intent intent = new Intent();
             intent.putExtra(NEW_NOTE, newTodo);
             setResult(RESULT_OK, intent);
             finish();
