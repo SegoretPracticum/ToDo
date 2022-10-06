@@ -6,22 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".TodoNotesActivity">
 
-    <Button
+        <Button
         android:id="@+id/addNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_note"
+        android:layout_marginEnd="@dimen/buttMarginEnd"
+        android:layout_marginBottom="@dimen/buttMarginBottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="@dimen/RVWight"
+        android:layout_width="wrap_content"
         android:id="@+id/resView"
-        android:layout_height="@dimen/RVHeight"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/RVMarginTop"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
