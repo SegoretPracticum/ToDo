@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="TVnoteMargStart">36dp</dimen>
-    <dimen name="TVnoteMargTop">48dp</dimen>
-    <dimen name="RVWight">319dp</dimen>
-    <dimen name="RVHeight">433dp</dimen>
-    <dimen name="RVMarginTop">76dp</dimen>
-    <dimen name="ETenterNoteMargStart">80dp</dimen>
-    <dimen name="ETenterNoteMargTop">56dp</dimen>
-    <dimen name="TVnotesViewSize">20sp</dimen>
+    <dimen name="TVNoteMargStart">24dp</dimen>
+    <dimen name="TVNoteMargTop">24dp</dimen>
+    <dimen name="RVMarginTop">24dp</dimen>
+    <dimen name="ETEnterNoteMargStart">18dp</dimen>
+    <dimen name="ETEnterNoteMargTop">11dp</dimen>
+    <dimen name="TVNotesViewSize">20sp</dimen>
+    <dimen name="buttMarginRight">18dp</dimen>
+    <dimen name="buttMarginEnd">18dp</dimen>
+    <dimen name="buttMarginBottom">8dp</dimen>
+    <dimen name="ETEnterNoteMargEnd">18dp</dimen>
 </resources>

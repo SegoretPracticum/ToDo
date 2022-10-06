@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class TodoNotes implements Parcelable {
-    private String noteText;
+    private final String noteText;
 
     public TodoNotes(String noteText) {
         this.noteText = noteText;
@@ -29,11 +29,6 @@ public class TodoNotes implements Parcelable {
     public String getNoteText() {
         return noteText;
     }
-
-    public void setNoteText(String noteText) {
-        this.noteText = noteText;
-    }
-
 
     @Override
     public int describeContents() {
