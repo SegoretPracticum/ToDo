@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="TVNoteMargStart">24dp</dimen>
-    <dimen name="TVNoteMargTop">24dp</dimen>
-    <dimen name="RVMarginTop">24dp</dimen>
-    <dimen name="ETEnterNoteMargStart">18dp</dimen>
-    <dimen name="ETEnterNoteMargTop">11dp</dimen>
-    <dimen name="TVNotesViewSize">20sp</dimen>
-    <dimen name="buttMarginRight">18dp</dimen>
-    <dimen name="buttMarginEnd">18dp</dimen>
-    <dimen name="buttMarginBottom">8dp</dimen>
-    <dimen name="ETEnterNoteMargEnd">18dp</dimen>
+    <dimen name="notes_view_text_view_margin_start">24dp</dimen>
+    <dimen name="notes_view_text_view_margin_top">24dp</dimen>
+    <dimen name="todo_notes_activity_recycler_view_margin_top">24dp</dimen>
+    <dimen name="note_edit_activity_edit_text_margin_start">18dp</dimen>
+    <dimen name="note_edit_activity_edit_text_margin_top">11dp</dimen>
+    <dimen name="notes_view_text_view_text_size">20sp</dimen>
+    <dimen name="todo_notes_activity_btn_margin_right">18dp</dimen>
+    <dimen name="todo_notes_activity_btn_margin_end">18dp</dimen>
+    <dimen name="todo_notes_activity_btn_margin_bottom">8dp</dimen>
+    <dimen name="note_edit_activity_edit_text_margin_end">18dp</dimen>
+    <dimen name="notes_view_padding_end">7dp</dimen>
+    <dimen name="notes_view_padding_start">8dp</dimen>
+    <dimen name="notes_view_padding_top">9dp</dimen>
+    <dimen name="notes_view_padding_bottom">7dp</dimen>
 </resources>

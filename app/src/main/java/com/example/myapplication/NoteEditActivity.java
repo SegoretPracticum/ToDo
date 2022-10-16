@@ -14,7 +14,7 @@ public class NoteEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-        EditText enterNote = findViewById(R.id.enterNote);
+        EditText enterNote = findViewById(R.id.note_edit_activity_edit_text_enter_note);
         String newNote = getIntent().getStringExtra(NEW_NOTE);
         enterNote.setText(newNote);
 

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-   <TextView
-    android:id="@+id/noteView"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notes_view_text_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textSize="@dimen/TVNotesViewSize"
-    android:layout_marginStart="@dimen/TVNoteMargStart"
-    android:layout_marginTop="@dimen/TVNoteMargTop"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:layout_marginStart="@dimen/notes_view_text_view_margin_start"
+    android:layout_marginTop="@dimen/notes_view_text_view_margin_top"
+    android:paddingStart="@dimen/notes_view_padding_start"
+    android:paddingTop="@dimen/notes_view_padding_top"
+    android:paddingEnd="@dimen/notes_view_padding_end"
+    android:paddingBottom="@dimen/notes_view_padding_bottom"
+    android:textSize="@dimen/notes_view_text_view_text_size" />
 
