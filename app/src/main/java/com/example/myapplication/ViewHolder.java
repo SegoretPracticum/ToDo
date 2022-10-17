@@ -13,4 +13,8 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         note = itemView.findViewById(R.id.notes_view_text_view);
     }
+
+    public void bindViewHolder(TodoNotes todo) {
+        note.setText(todo.getNoteText());
+    }
 }
