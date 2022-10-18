@@ -2,7 +2,6 @@
 <resources>
     <dimen name="notes_view_text_view_margin_start">24dp</dimen>
     <dimen name="notes_view_text_view_margin_top">24dp</dimen>
-    <dimen name="todo_notes_activity_recycler_view_margin_top">24dp</dimen>
     <dimen name="note_edit_activity_edit_text_margin_start">18dp</dimen>
     <dimen name="note_edit_activity_edit_text_margin_top">11dp</dimen>
     <dimen name="notes_view_text_view_text_size">20sp</dimen>

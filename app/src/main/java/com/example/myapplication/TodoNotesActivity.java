@@ -30,7 +30,7 @@ public class TodoNotesActivity extends AppCompatActivity {
             if (result.getData() != null) {
                 TodoNotes newTodo = result.getData().getParcelableExtra(NEW_NOTE);
                 todoNotes.add(newTodo);
-                notesAdapter.notifyItemChanged(todoNotes.size());
+                notesAdapter.notifyItemInserted(todoNotes.size());
             }
         });
 
