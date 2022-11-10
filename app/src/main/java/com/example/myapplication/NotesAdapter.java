@@ -12,11 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
+    interface OnTodoClickListener {
+        void OnTodoClick(TodoNotes todoNotes, int index);
+    }
 
     private final List<TodoNotes> notesMassive;
+    private final OnTodoClickListener onTodoClickListener;
 
-    NotesAdapter(ArrayList<TodoNotes> notesMassive) {
+    NotesAdapter(ArrayList<TodoNotes> notesMassive, OnTodoClickListener onTodoClickListener) {
         this.notesMassive = notesMassive;
+        this.onTodoClickListener = onTodoClickListener;
     }
 
     @NonNull
@@ -32,6 +37,8 @@ public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TodoNotes todoNotes = notesMassive.get(position);
         holder.bindViewHolder(todoNotes);
+        holder.itemView.setOnClickListener(view ->
+                onTodoClickListener.OnTodoClick(todoNotes, position));
     }
 
     @Override
