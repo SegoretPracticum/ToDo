@@ -13,7 +13,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         note = itemView.findViewById(R.id.notes_view_text_view);
         itemView.setOnClickListener(view ->
-                onTodoClickListener.OnTodoClick(getAdapterPosition()));
+                onTodoClickListener.onTodoClick(getAdapterPosition()));
     }
 
     public void bindViewHolder(TodoNotes todoNote) {

@@ -13,18 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class TodoNotesActivity extends AppCompatActivity {
+    private static final int NO_POSITION = -1;
     public static final String TODO_NOTE = "TODO_NOTE";
     public NotesAdapter notesAdapter;
     public ArrayList<TodoNotes> todoNotesList = new ArrayList<>();
     ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null) {
             TodoNotes newTodo = result.getData().getParcelableExtra(TODO_NOTE);
-            if (!todoNotesList.contains(newTodo)) {
+            int index = todoNotesList.indexOf(newTodo);
+            if (index == NO_POSITION) {
                 todoNotesList.add(newTodo);
                 notesAdapter.notifyItemInserted(todoNotesList.size());
             } else {
-                todoNotesList.set(todoNotesList.indexOf(newTodo), newTodo);
-                notesAdapter.notifyItemChanged(todoNotesList.indexOf(newTodo));
+                todoNotesList.set(index, newTodo);
+                notesAdapter.notifyItemChanged(index);
             }
         }
     });

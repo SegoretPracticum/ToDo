@@ -14,7 +14,7 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     interface OnTodoClickListener {
-        void OnTodoClick(int position);
+        void onTodoClick(int position);
     }
 
     private final List<TodoNotes> notesMassive;

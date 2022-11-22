@@ -30,7 +30,6 @@ public class NoteEditActivity extends AppCompatActivity {
         enterNote.setOnClickListener(view -> {
             Intent intent = new Intent();
             if (enterNote.getText().toString().length() == 0) {
-                enterNote.setEnabled(enterNote.getText().toString().length() == 0);
                 Toast.makeText(getApplicationContext(), R.string.note_edit_activity_edit_text_toast, Toast.LENGTH_SHORT).show();
             } else {
                 finalNote.setNoteText(enterNote.getText().toString());
