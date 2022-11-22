@@ -13,10 +13,16 @@ import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-    private final List<TodoNotes> notesMassive;
+    interface OnTodoClickListener {
+        void onTodoClick(int position);
+    }
 
-    NotesAdapter(ArrayList<TodoNotes> notesMassive) {
+    private final List<TodoNotes> notesMassive;
+    private final OnTodoClickListener onTodoClickListener;
+
+    NotesAdapter(ArrayList<TodoNotes> notesMassive, OnTodoClickListener onTodoClickListener) {
         this.notesMassive = notesMassive;
+        this.onTodoClickListener = onTodoClickListener;
     }
 
     @NonNull
@@ -25,7 +31,7 @@ public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.notesview, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, this.onTodoClickListener);
     }
 
     @Override

@@ -1,12 +1,16 @@
 package com.example.myapplication;
 
-import static com.example.myapplication.TodoNotesActivity.NEW_NOTE;
+
+import static com.example.myapplication.TodoNotesActivity.TODO_NOTE;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.UUID;
 
 public class NoteEditActivity extends AppCompatActivity {
 
@@ -15,15 +19,24 @@ public class NoteEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         EditText enterNote = findViewById(R.id.note_edit_activity_edit_text_enter_note);
-        String newNote = getIntent().getStringExtra(NEW_NOTE);
-        enterNote.setText(newNote);
+        TodoNotes note = getIntent().getParcelableExtra(TODO_NOTE);
+        if (note != null) {
+            enterNote.setText(note.getNoteText());
+        } else {
+            note = new TodoNotes("", UUID.randomUUID().toString());
+        }
 
+        TodoNotes finalNote = note;
         enterNote.setOnClickListener(view -> {
-            TodoNotes newTodo = new TodoNotes(enterNote.getText().toString());
             Intent intent = new Intent();
-            intent.putExtra(NEW_NOTE, newTodo);
-            setResult(RESULT_OK, intent);
-            finish();
+            if (enterNote.getText().toString().length() == 0) {
+                Toast.makeText(getApplicationContext(), R.string.note_edit_activity_edit_text_toast, Toast.LENGTH_SHORT).show();
+            } else {
+                finalNote.setNoteText(enterNote.getText().toString());
+                intent.putExtra(TODO_NOTE, finalNote);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
         });
     }
 }

@@ -3,15 +3,20 @@ package com.example.myapplication;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TodoNotes implements Parcelable {
-    private final String noteText;
+import java.util.Objects;
 
-    public TodoNotes(String noteText) {
+public class TodoNotes implements Parcelable {
+    private String noteText;
+    private final String idTodo;
+
+    public TodoNotes(String noteText, String idTodo) {
         this.noteText = noteText;
+        this.idTodo = idTodo;
     }
 
     protected TodoNotes(Parcel in) {
         noteText = in.readString();
+        idTodo = in.readString();
     }
 
     public static final Creator<TodoNotes> CREATOR = new Creator<TodoNotes>() {
@@ -26,6 +31,10 @@ public class TodoNotes implements Parcelable {
         }
     };
 
+    public void setNoteText(String noteText) {
+        this.noteText = noteText;
+    }
+
     public String getNoteText() {
         return noteText;
     }
@@ -38,5 +47,19 @@ public class TodoNotes implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(noteText);
+        parcel.writeString(idTodo);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TodoNotes)) return false;
+        TodoNotes todoNotes = (TodoNotes) o;
+        return Objects.equals(idTodo, todoNotes.idTodo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idTodo);
     }
 }

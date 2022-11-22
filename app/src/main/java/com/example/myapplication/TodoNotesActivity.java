@@ -13,8 +13,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class TodoNotesActivity extends AppCompatActivity {
-    public static final String NEW_NOTE = "NEW_NOTE";
-    private final ArrayList<TodoNotes> todoNotes = new ArrayList<>();
+    private static final int NO_POSITION = -1;
+    public static final String TODO_NOTE = "TODO_NOTE";
+    public NotesAdapter notesAdapter;
+    public ArrayList<TodoNotes> todoNotesList = new ArrayList<>();
+    ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getData() != null) {
+            TodoNotes newTodo = result.getData().getParcelableExtra(TODO_NOTE);
+            int index = todoNotesList.indexOf(newTodo);
+            if (index == NO_POSITION) {
+                todoNotesList.add(newTodo);
+                notesAdapter.notifyItemInserted(todoNotesList.size());
+            } else {
+                todoNotesList.set(index, newTodo);
+                notesAdapter.notifyItemChanged(index);
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,17 +37,15 @@ public class TodoNotesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         RecyclerView notesView = findViewById(R.id.todo_notes_activity_res_view);
         Button addNote = findViewById(R.id.todo_notes_activity_btn_add_note);
-        NotesAdapter notesAdapter = new NotesAdapter(todoNotes);
+        NotesAdapter.OnTodoClickListener onTodoListener = (position) -> {
+            Intent todoEditedNote = new Intent(TodoNotesActivity.this, NoteEditActivity.class);
+            todoEditedNote.putExtra(TODO_NOTE, todoNotesList.get(position));
+            noteResult.launch(todoEditedNote);
+        };
+
+        notesAdapter = new NotesAdapter(todoNotesList, onTodoListener);
         notesView.setLayoutManager(new LinearLayoutManager(this));
         notesView.setAdapter(notesAdapter);
-
-        ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getData() != null) {
-                TodoNotes newTodo = result.getData().getParcelableExtra(NEW_NOTE);
-                todoNotes.add(newTodo);
-                notesAdapter.notifyItemInserted(todoNotes.size());
-            }
-        });
 
         addNote.setOnClickListener(view -> {
             Intent addNewNote = new Intent(TodoNotesActivity.this, NoteEditActivity.class);
@@ -40,3 +53,4 @@ public class TodoNotesActivity extends AppCompatActivity {
         });
     }
 }
+
