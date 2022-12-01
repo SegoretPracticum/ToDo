@@ -4,4 +4,7 @@
     <string name="note">Note</string>
     <string name="note_edit_activity_edit_text_enter_note">Enter note</string>
     <string name="note_edit_activity_edit_text_toast">Please, enter note</string>
+    <string name="menu_toolbar_button_send_note">button_send_note</string>
+    <string name="menu_toolbar_back">button_send_note</string>
+    <string name="todo_notes_activity_btn_content_description">TODO</string>
 </resources>
