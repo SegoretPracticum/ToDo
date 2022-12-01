@@ -13,4 +13,6 @@
     <dimen name="notes_view_padding_start">8dp</dimen>
     <dimen name="notes_view_padding_top">9dp</dimen>
     <dimen name="notes_view_padding_bottom">7dp</dimen>
+     <dimen name="note_edit_activity_edit_text_enter_note_min_height">48dp</dimen>
+    <dimen name="note_edit_activity_edit_text_enter_note_margin_start">24dp</dimen>
 </resources>
