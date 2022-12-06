@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="todo_notes_activity_btn_add_note_color">#F5A04B</color>
+    <color name="toolbar_color">#6200EE</color>
+    <color name="note_edit_activity_toolbar_text_color">#FFFFFF</color>
+    <color name="note_edit_activity_edit_text_enter_note_text_color">#FFFFFF</color>
+    <color name="todo_notes_activity_toolbar_text_color">#FFFFFF</color>
 </resources>
