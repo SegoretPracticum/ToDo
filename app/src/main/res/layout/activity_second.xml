@@ -8,31 +8,28 @@
 
     <EditText
         android:id="@+id/note_edit_activity_edit_text_enter_note"
-        style="@android:style/Widget.EditText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/note_edit_activity_edit_text_enter_note_margin_start"
+        android:layout_marginTop="@dimen/note_edit_activity_edit_text_enter_note_margin_top"
         android:layout_marginEnd="@dimen/note_edit_activity_edit_text_margin_end"
         android:autofillHints="no"
+        android:background="@color/note_edit_activity_edit_text_enter_note_text_color"
         android:hint="@string/note_edit_activity_edit_text_enter_note"
-        android:minHeight="@dimen/note_edit_activity_edit_text_enter_note_min_height"
+        android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/note_edit_activity_toolbar" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/note_edit_activity_toolbar"
-        style="@style/ThemeOverlay.AppCompat.ActionBar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:background="@color/toolbar_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/toolbar_menu"
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-        app:titleTextColor="@color/white"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp" />
+        app:titleTextColor="@color/note_edit_activity_toolbar_text_color" />
 </androidx.constraintlayout.widget.ConstraintLayout>
