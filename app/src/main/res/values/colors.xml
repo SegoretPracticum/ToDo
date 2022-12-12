@@ -12,4 +12,5 @@
     <color name="note_edit_activity_toolbar_text_color">#FFFFFF</color>
     <color name="note_edit_activity_edit_text_enter_note_text_color">#FFFFFF</color>
     <color name="todo_notes_activity_toolbar_text_color">#FFFFFF</color>
+    <color name="card_view_stroke_color">#000000</color>
 </resources>
