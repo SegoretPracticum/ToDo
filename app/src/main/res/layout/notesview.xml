@@ -2,10 +2,9 @@
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/notes_view_text_view"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/notes_view_text_view_margin_start"
-    android:layout_marginTop="@dimen/notes_view_text_view_margin_top"
+    android:padding="@dimen/notes_view_padding"
     android:paddingStart="@dimen/notes_view_padding_start"
     android:paddingTop="@dimen/notes_view_padding_top"
     android:paddingEnd="@dimen/notes_view_padding_end"

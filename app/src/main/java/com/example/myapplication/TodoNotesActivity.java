@@ -2,13 +2,14 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -36,7 +37,7 @@ public class TodoNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         RecyclerView notesView = findViewById(R.id.todo_notes_activity_res_view);
-        Button addNote = findViewById(R.id.todo_notes_activity_btn_add_note);
+        FloatingActionButton addNote = findViewById(R.id.todo_notes_activity_btn_add_note);
         NotesAdapter.OnTodoClickListener onTodoListener = (position) -> {
             Intent todoEditedNote = new Intent(TodoNotesActivity.this, NoteEditActivity.class);
             todoEditedNote.putExtra(TODO_NOTE, todoNotesList.get(position));
@@ -53,4 +54,3 @@ public class TodoNotesActivity extends AppCompatActivity {
         });
     }
 }
-

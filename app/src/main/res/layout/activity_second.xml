@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<EditText xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/note_edit_activity_edit_text_enter_note"
-    style="@android:style/Widget.EditText"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/note_edit_activity_edit_text_margin_start"
-    android:layout_marginTop="@dimen/note_edit_activity_edit_text_margin_top"
-    android:layout_marginEnd="@dimen/note_edit_activity_edit_text_margin_end"
-    android:autofillHints="no"
-    android:hint="@string/note_edit_activity_edit_text_enter_note"
-    android:inputType="textImeMultiLine"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TodoNotesActivity">
+
+    <EditText
+        android:id="@+id/note_edit_activity_edit_text_enter_note"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/note_edit_activity_edit_text_enter_note_margin_start"
+        android:layout_marginTop="@dimen/note_edit_activity_edit_text_enter_note_margin_top"
+        android:layout_marginEnd="@dimen/note_edit_activity_edit_text_margin_end"
+        android:autofillHints="no"
+        android:background="@color/note_edit_activity_edit_text_enter_note_text_color"
+        android:hint="@string/note_edit_activity_edit_text_enter_note"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/note_edit_activity_toolbar" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/note_edit_activity_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/toolbar_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/toolbar_menu"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        app:titleTextColor="@color/note_edit_activity_toolbar_text_color" />
+</androidx.constraintlayout.widget.ConstraintLayout>
