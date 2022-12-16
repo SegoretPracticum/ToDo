@@ -46,10 +46,12 @@ public class NoteEditActivity extends AppCompatActivity {
 
     private void processingIntent(EditText editText, Toolbar toolbar) {
         if (note != null) {
+
             toolbar.setTitle(R.string.note_edit_activity_toolbar_title_edit_todo);
             editText.setText(note.getNoteText());
         } else {
             toolbar.setTitle(R.string.note_edit_activity_toolbar_title_add_todo);
+
             note = new TodoNotes("", UUID.randomUUID().toString());
         }
     }

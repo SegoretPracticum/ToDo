@@ -23,4 +23,5 @@
     <dimen name="todo_notes_activity_res_view_margin_top">11dp</dimen>
     <dimen name="todo_notes_activity_res_view_margin_start">12dp</dimen>
     <dimen name="todo_notes_activity_res_view_margin_end">12dp</dimen>
+
 </resources>
