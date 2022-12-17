@@ -10,23 +10,21 @@
         android:id="@+id/card_todo"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/card_view_margin"
         app:cardBackgroundColor="@drawable/todo_selector"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
+        app:cardElevation="@dimen/card_view_elevation"
+        app:cardUseCompatPadding="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/card_view_stroke_color"
-        app:strokeWidth="@dimen/card_view_stroke_width">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/notes_view_text_view"
+            android:id="@+id/item_notes_view_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/notes_view_padding_start"
-            android:paddingTop="@dimen/notes_view_padding_top"
-            android:paddingEnd="@dimen/notes_view_padding_end"
-            android:paddingBottom="@dimen/notes_view_padding_bottom"
-            android:textSize="@dimen/notes_view_text_view_text_size"
-            app:cardBackgroundColor="@drawable/todo_selector" />
+            android:layout_marginStart="@dimen/item_notes_view_margin_start"
+            android:layout_marginTop="@dimen/item_notes_view_margin_top"
+            android:layout_marginEnd="@dimen/item_notes_view_margin_end"
+            android:layout_marginBottom="@dimen/item_notes_view_margin_bottom"
+            android:textSize="@dimen/item_notes_view_text_view_text_size" />
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public ViewHolder(@NonNull View itemView, NotesAdapter.OnTodoClickListener onTodoClickListener) {
         super(itemView);
-        note = itemView.findViewById(R.id.notes_view_text_view);
+        note = itemView.findViewById(R.id.item_notes_view_text_view);
         itemView.setOnClickListener(view ->
                 onTodoClickListener.onTodoClick(getAdapterPosition()));
     }
