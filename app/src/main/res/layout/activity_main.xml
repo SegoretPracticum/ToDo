@@ -38,7 +38,7 @@
         android:layout_marginStart="@dimen/todo_notes_activity_res_view_margin_start"
         android:layout_marginEnd="@dimen/todo_notes_activity_res_view_margin_end"
         android:clipToPadding="false"
-        android:padding="@dimen/todo_notes_activity_res_view_padding_top"
+        android:paddingTop="@dimen/todo_notes_activity_res_view_padding_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

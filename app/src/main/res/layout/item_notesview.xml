@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/card_todo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/card_view_elevation"
+        android:layout_margin="@dimen/card_view_margin"
         android:foreground="?attr/selectableItemBackground"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
+        app:cardElevation="@dimen/card_view_elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,5 +26,5 @@
             android:layout_marginEnd="@dimen/item_notes_view_margin_end"
             android:layout_marginBottom="@dimen/item_notes_view_margin_bottom"
             android:textSize="@dimen/item_notes_view_text_view_text_size" />
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
