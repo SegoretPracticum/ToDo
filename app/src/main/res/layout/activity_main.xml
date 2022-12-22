@@ -39,6 +39,7 @@
         android:paddingStart="@dimen/todo_notes_activity_res_view_padding_start"
         android:paddingTop="@dimen/todo_notes_activity_res_view_padding_top"
         android:paddingEnd="@dimen/todo_notes_activity_res_view_padding_end"
+        android:paddingBottom="@dimen/todo_notes_activity_res_view_padding_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
