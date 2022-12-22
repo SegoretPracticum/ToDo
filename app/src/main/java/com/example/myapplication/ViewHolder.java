@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
@@ -11,8 +12,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public ViewHolder(@NonNull View itemView, NotesAdapter.OnTodoClickListener onTodoClickListener) {
         super(itemView);
-        note = itemView.findViewById(R.id.notes_view_text_view);
-        itemView.setOnClickListener(view ->
+        note = itemView.findViewById(R.id.item_notes_view_text_view);
+        CardView cardView = itemView.findViewById(R.id.card_todo);
+        cardView.setOnClickListener(view ->
                 onTodoClickListener.onTodoClick(getAdapterPosition()));
     }
 

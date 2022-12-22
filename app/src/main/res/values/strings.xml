@@ -7,6 +7,7 @@
     <string name="menu_toolbar_button_send_note">button_send_note</string>
     <string name="menu_toolbar_back">button_send_note</string>
     <string name="todo_notes_activity_btn_content_description">A new note has been created</string>
-    <string name="toolbar_tittle_edit_todo">Edit todo</string>
-    <string name="toolbar_tittle_add_todo">Add todo</string>
+    <string name="note_edit_activity_toolbar_title_edit_todo">Edit todo</string>
+    <string name="note_edit_activity_toolbar_title_add_todo">Add todo</string>
+
 </resources>

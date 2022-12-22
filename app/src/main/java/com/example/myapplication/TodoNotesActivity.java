@@ -6,8 +6,8 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class TodoNotesActivity extends AppCompatActivity {
     private static final int NO_POSITION = -1;
+    private static final int SPAN_COUNT = 2;
     public static final String TODO_NOTE = "TODO_NOTE";
     public NotesAdapter notesAdapter;
     public ArrayList<TodoNotes> todoNotesList = new ArrayList<>();
@@ -45,7 +46,7 @@ public class TodoNotesActivity extends AppCompatActivity {
         };
 
         notesAdapter = new NotesAdapter(todoNotesList, onTodoListener);
-        notesView.setLayoutManager(new LinearLayoutManager(this));
+        notesView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL));
         notesView.setAdapter(notesAdapter);
 
         addNote.setOnClickListener(view -> {

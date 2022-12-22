@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="notes_view_text_view_margin_start">16dp</dimen>
+    <dimen name="notes_view_text_view_margin_top">7dp</dimen>
     <dimen name="note_edit_activity_edit_text_margin_start">16dp</dimen>
     <dimen name="note_edit_activity_edit_text_margin_top">11dp</dimen>
-    <dimen name="notes_view_text_view_text_size">14sp</dimen>
+    <dimen name="item_notes_view_text_view_text_size">14sp</dimen>
     <dimen name="todo_notes_activity_btn_margin_right">18dp</dimen>
     <dimen name="todo_notes_activity_btn_margin_end">18dp</dimen>
     <dimen name="todo_notes_activity_btn_margin_bottom">8dp</dimen>
     <dimen name="note_edit_activity_edit_text_margin_end">16dp</dimen>
-    <dimen name="notes_view_padding_end">7dp</dimen>
-    <dimen name="notes_view_padding_start">8dp</dimen>
-    <dimen name="notes_view_padding_top">9dp</dimen>
-    <dimen name="notes_view_padding_bottom">7dp</dimen>
+    <dimen name="item_notes_view_margin_end">7dp</dimen>
+    <dimen name="item_notes_view_margin_start">8dp</dimen>
+    <dimen name="item_notes_view_margin_top">9dp</dimen>
+    <dimen name="item_notes_view_margin_bottom">7dp</dimen>
+    <dimen name="note_edit_activity_edit_text_enter_note_min_height">48dp</dimen>
     <dimen name="note_edit_activity_edit_text_enter_note_margin_start">16dp</dimen>
     <dimen name="note_edit_activity_edit_text_enter_note_margin_top">11dp</dimen>
-    <dimen name="notes_view_padding">8dp</dimen>
-    <dimen name="todo_notes_activity_res_view_margin_top">7dp</dimen>
-    <dimen name="todo_notes_activity_res_view_margin_start">8dp</dimen>
-    <dimen name="todo_notes_activity_res_view_margin_end">8dp</dimen>
+    <dimen name="card_view_corner_radius">5dp</dimen>
+    <dimen name="card_view_stroke_width">1dp</dimen>
+    <dimen name="card_view_margin">4dp</dimen>
+    <dimen name="notes_view_margin_bottom">4dp</dimen>
+    <dimen name="todo_notes_activity_res_view_padding_top">11dp</dimen>
+    <dimen name="todo_notes_activity_res_view_padding_start">12dp</dimen>
+    <dimen name="todo_notes_activity_res_view_padding_end">12dp</dimen>
+    <dimen name="card_view_elevation">4dp</dimen>
+    <dimen name="todo_notes_activity_res_view_padding_bottom">11dp</dimen>
+
 </resources>
