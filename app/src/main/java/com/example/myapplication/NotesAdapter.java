@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,7 @@ public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
         void onTodoClick(int position);
     }
 
-    private final List<TodoNotes> notesMassive;
+    private List<TodoNotes> notesMassive;
     private final OnTodoClickListener onTodoClickListener;
 
     NotesAdapter(ArrayList<TodoNotes> notesMassive, OnTodoClickListener onTodoClickListener) {
@@ -39,7 +40,12 @@ public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
         TodoNotes todoNotes = notesMassive.get(position);
         holder.bindViewHolder(todoNotes);
     }
+    @SuppressLint("NotifyDataSetChanged")
+    public void refreshList(List<TodoNotes> list) {
+        notesMassive=list;
+        notifyDataSetChanged();
 
+    }
     @Override
     public int getItemCount() {
         return notesMassive.size();
