@@ -48,7 +48,6 @@ public class TodoNotesActivity extends AppCompatActivity {
         notesAdapter = new NotesAdapter(todoNotesList, onTodoListener);
         notesView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL));
         notesView.setAdapter(notesAdapter);
-        viewModel.setNotesAdapter(notesAdapter);
         Observer<ArrayList<TodoNotes>> todoListObserver = todoList -> {
             notesAdapter.refreshList(todoList);
             todoNotesList = todoList;
