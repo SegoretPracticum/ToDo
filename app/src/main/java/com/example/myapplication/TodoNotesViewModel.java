@@ -1,29 +1,53 @@
 package com.example.myapplication;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoNotesViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<TodoNotes>> todoList = new MutableLiveData<>();
-    private final ArrayList<TodoNotes> todoNotesList = new ArrayList<>();
-    private static final int NO_POSITION = -1;
+    private final MutableLiveData<Boolean> addTodoEvent = new MutableLiveData<>();
+    private final MutableLiveData<TodoNotes> editTodoEvent = new MutableLiveData<>();
 
-    public MutableLiveData<ArrayList<TodoNotes>> getTodoList() {
+    public LiveData<? extends List<TodoNotes>> getTodoList() {
         return todoList;
     }
 
-    public void onClickResultProcessing(TodoNotes todoNotes) {
-
-        int index = todoNotesList.indexOf(todoNotes);
-        if (index == NO_POSITION) {
+    public void noteEditActivityResultProcessing(TodoNotes todoNotes) {
+        ArrayList<TodoNotes> todoNotesList = todoList.getValue();
+        if (todoNotesList == null) {
+            todoNotesList = new ArrayList<>();
+        }
+        if (!todoNotesList.contains(todoNotes)) {
             todoNotesList.add(todoNotes);
-
         } else {
+            int index = todoNotesList.indexOf(todoNotes);
             todoNotesList.set(index, todoNotes);
         }
         todoList.setValue(todoNotesList);
     }
 
+    public LiveData<Boolean> getAddTodoEvent() {
+        return addTodoEvent;
+    }
+
+    public void buttonClick() {
+        addTodoEvent.setValue(true);
+    }
+
+    public void todoItemClick(TodoNotes todoNotes) {
+        editTodoEvent.setValue(todoNotes);
+    }
+
+    public LiveData<TodoNotes> getEditTodoEvent() {
+        return editTodoEvent;
+    }
+
+    public void clickReset() {
+        addTodoEvent.setValue(false);
+        editTodoEvent.setValue(null);
+    }
 }

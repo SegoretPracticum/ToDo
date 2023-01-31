@@ -15,14 +15,14 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     interface OnTodoClickListener {
-        void onTodoClick(int position);
+        void onTodoClick(TodoNotes todoNotes);
+
     }
 
-    private List<TodoNotes> notesMassive;
+    public List<TodoNotes> notesMassive = new ArrayList<>();
     private final OnTodoClickListener onTodoClickListener;
 
-    NotesAdapter(ArrayList<TodoNotes> notesMassive, OnTodoClickListener onTodoClickListener) {
-        this.notesMassive = notesMassive;
+    NotesAdapter(OnTodoClickListener onTodoClickListener) {
         this.onTodoClickListener = onTodoClickListener;
     }
 
@@ -40,12 +40,13 @@ public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
         TodoNotes todoNotes = notesMassive.get(position);
         holder.bindViewHolder(todoNotes);
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void refreshList(List<TodoNotes> list) {
-        notesMassive=list;
+        notesMassive = list;
         notifyDataSetChanged();
-
     }
+
     @Override
     public int getItemCount() {
         return notesMassive.size();
