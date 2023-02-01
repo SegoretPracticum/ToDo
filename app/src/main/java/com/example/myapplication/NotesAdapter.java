@@ -19,7 +19,7 @@ public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     }
 
-    public List<TodoNotes> notesMassive = new ArrayList<>();
+    private List<TodoNotes> notesMassive = new ArrayList<>();
     private final OnTodoClickListener onTodoClickListener;
 
     NotesAdapter(OnTodoClickListener onTodoClickListener) {

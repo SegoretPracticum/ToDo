@@ -16,13 +16,14 @@ public class TodoNotesActivity extends AppCompatActivity {
 
     private static final int SPAN_COUNT = 2;
     public static final String TODO_NOTE = "TODO_NOTE";
-    public NotesAdapter notesAdapter;
-    RecyclerView notesView;
-    public TodoNotesViewModel viewModel;
-    ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+    private NotesAdapter notesAdapter;
+    private RecyclerView notesView;
+    private TodoNotesViewModel viewModel;
+
+    private final ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null) {
             TodoNotes newTodo = result.getData().getParcelableExtra(TODO_NOTE);
-            viewModel.noteEditActivityResultProcessing(newTodo);
+            viewModel.onEventReceived(newTodo);
         }
     });
 
@@ -34,39 +35,35 @@ public class TodoNotesActivity extends AppCompatActivity {
         FloatingActionButton addNote = findViewById(R.id.todo_notes_activity_btn_add_note);
         initViewModel();
         joinNotesAdapter();
-        addNote.setOnClickListener(view -> {
-            viewModel.buttonClick();
-            viewModel.clickReset();
-        });
+        addNote.setOnClickListener(view -> viewModel.buttonClicked());
     }
 
-    private void btnClickAction(Boolean btnClick) {
+    private void onButtonClicked(Boolean btnClick) {
         if (btnClick) {
             Intent addNewNote = new Intent(TodoNotesActivity.this, NoteEditActivity.class);
             noteResult.launch(addNewNote);
+            viewModel.clickReset();
         }
     }
 
-    private void itemClickAction(TodoNotes todoNotes) {
+    private void onItemClicked(TodoNotes todoNotes) {
         if (todoNotes != null) {
             Intent todoEditedNote = new Intent(TodoNotesActivity.this, NoteEditActivity.class);
             todoEditedNote.putExtra(TODO_NOTE, todoNotes);
             noteResult.launch(todoEditedNote);
+            viewModel.clickReset();
         }
     }
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(TodoNotesViewModel.class);
-        viewModel.getAddTodoEvent().observe(this, this::btnClickAction);
-        viewModel.getEditTodoEvent().observe(this, this::itemClickAction);
+        viewModel.getAddTodoEvent().observe(this, this::onButtonClicked);
+        viewModel.getEditTodoEvent().observe(this, this::onItemClicked);
         viewModel.getTodoList().observe(this, todoList -> notesAdapter.refreshList(todoList));
     }
 
     private void joinNotesAdapter() {
-        NotesAdapter.OnTodoClickListener onTodoListener = (todoNotes) -> {
-            viewModel.todoItemClick(todoNotes);
-            viewModel.clickReset();
-        };
+        NotesAdapter.OnTodoClickListener onTodoListener = (todoNotes) -> viewModel.todoItemClicked(todoNotes);
         notesAdapter = new NotesAdapter(onTodoListener);
         notesView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL));
         notesView.setAdapter(notesAdapter);

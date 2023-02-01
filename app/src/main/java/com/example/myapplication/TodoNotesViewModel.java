@@ -16,7 +16,7 @@ public class TodoNotesViewModel extends ViewModel {
         return todoList;
     }
 
-    public void noteEditActivityResultProcessing(TodoNotes todoNotes) {
+    public void onEventReceived(TodoNotes todoNotes) {
         ArrayList<TodoNotes> todoNotesList = todoList.getValue();
         if (todoNotesList == null) {
             todoNotesList = new ArrayList<>();
@@ -34,11 +34,11 @@ public class TodoNotesViewModel extends ViewModel {
         return addTodoEvent;
     }
 
-    public void buttonClick() {
+    public void buttonClicked() {
         addTodoEvent.setValue(true);
     }
 
-    public void todoItemClick(TodoNotes todoNotes) {
+    public void todoItemClicked(TodoNotes todoNotes) {
         editTodoEvent.setValue(todoNotes);
     }
 
