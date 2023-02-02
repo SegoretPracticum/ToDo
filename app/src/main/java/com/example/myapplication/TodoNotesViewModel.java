@@ -16,7 +16,7 @@ public class TodoNotesViewModel extends ViewModel {
         return todoList;
     }
 
-    public void onEventReceived(TodoNotes todoNotes) {
+    public void updateTodoList(TodoNotes todoNotes) {
         ArrayList<TodoNotes> todoNotesList = todoList.getValue();
         if (todoNotesList == null) {
             todoNotesList = new ArrayList<>();
