@@ -23,7 +23,7 @@ public class TodoNotesActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null) {
             TodoNotes newTodo = result.getData().getParcelableExtra(TODO_NOTE);
-            viewModel.updateTodoList(newTodo);
+            viewModel.onResultReceived(newTodo);
         }
     });
 
