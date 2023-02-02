@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +15,14 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     interface OnTodoClickListener {
-        void onTodoClick(int position);
+        void onTodoClick(TodoNotes todoNotes);
+
     }
 
-    private final List<TodoNotes> notesMassive;
+    private List<TodoNotes> notesMassive = new ArrayList<>();
     private final OnTodoClickListener onTodoClickListener;
 
-    NotesAdapter(ArrayList<TodoNotes> notesMassive, OnTodoClickListener onTodoClickListener) {
-        this.notesMassive = notesMassive;
+    NotesAdapter(OnTodoClickListener onTodoClickListener) {
         this.onTodoClickListener = onTodoClickListener;
     }
 
@@ -38,6 +39,12 @@ public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TodoNotes todoNotes = notesMassive.get(position);
         holder.bindViewHolder(todoNotes);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void refreshList(List<TodoNotes> list) {
+        notesMassive = list;
+        notifyDataSetChanged();
     }
 
     @Override
