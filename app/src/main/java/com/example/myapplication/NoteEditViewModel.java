@@ -14,7 +14,6 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<Boolean> emptyTodoInput = new MutableLiveData<>();
     private TodoNotes todoNote;
 
-
     public LiveData<Boolean> getBackToMainActivityEvent() {
         return backToMainActivityEvent;
     }
@@ -70,5 +69,4 @@ public class NoteEditViewModel extends ViewModel {
     public void emptyInput() {
         emptyTodoInput.setValue(true);
     }
-
 }
