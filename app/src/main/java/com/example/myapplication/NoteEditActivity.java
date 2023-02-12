@@ -33,31 +33,23 @@ public class NoteEditActivity extends AppCompatActivity {
     }
 
     private void sendTodoNote(TodoNotes todoNotes) {
-        if (todoNotes != null) {
-            Intent intent = new Intent();
-            todoNotes.setNoteText(enterNote.getText().toString());
-            intent.putExtra(TODO_NOTE, todoNotes);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
-    }
-
-    private void onNavigationClicked(Boolean onNavigation) {
-        if (onNavigation) {
-            finish();
-        }
+        Intent intent = new Intent();
+        todoNotes.setNoteText(enterNote.getText().toString());
+        intent.putExtra(TODO_NOTE, todoNotes);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     private void textChangeWatch() {
         enterNote.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                //        do nothing
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                //        do nothing
             }
 
             @Override
@@ -90,7 +82,7 @@ public class NoteEditActivity extends AppCompatActivity {
                 enterNote.setText(todoText);
             }
         });
-        viewModel.getBackToMainActivityEvent().observe(this, this::onNavigationClicked);
+        viewModel.getToolbarNavigationEvent().observe(this, onNavigation -> finish());
         viewModel.getSendTodo().observe(this, this::sendTodoNote);
         viewModel.getEmptyTodoInput().observe(this, this::showToast);
     }

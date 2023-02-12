@@ -8,18 +8,18 @@ import java.util.UUID;
 
 public class NoteEditViewModel extends ViewModel {
 
-    private final MutableLiveData<Boolean> backToMainActivityEvent = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> toolbarNavigationEvent = new MutableLiveData<>();
     private final MutableLiveData<TodoNotes> sendTodo = new MutableLiveData<>();
     private final MutableLiveData<String> todoTextChange = new MutableLiveData<>();
     private final MutableLiveData<Boolean> emptyTodoInput = new MutableLiveData<>();
     private TodoNotes todoNote;
 
-    public LiveData<Boolean> getBackToMainActivityEvent() {
-        return backToMainActivityEvent;
+    public LiveData<Boolean> getToolbarNavigationEvent() {
+        return toolbarNavigationEvent;
     }
 
     public void navigationClicked() {
-        backToMainActivityEvent.setValue(true);
+        toolbarNavigationEvent.setValue(true);
     }
 
     public void clickReset() {
@@ -36,7 +36,6 @@ public class NoteEditViewModel extends ViewModel {
 
     public void onTextNoteChanged(String textNote) {
         if (textNote.length() == 0) {
-            emptyInput();
             todoTextChange.setValue(textNote);
         }
     }
@@ -64,9 +63,5 @@ public class NoteEditViewModel extends ViewModel {
 
     public LiveData<Boolean> getEmptyTodoInput() {
         return emptyTodoInput;
-    }
-
-    public void emptyInput() {
-        emptyTodoInput.setValue(true);
     }
 }
