@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,6 +20,31 @@ public class NoteEditActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NoteEditViewModel viewModel;
 
+    private final Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            viewModel.onBtnToolbarClicked(enterNote.getText().toString());
+            return true;
+        }
+    };
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            //        do nothing
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            //        do nothing
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            viewModel.onTextNoteChanged(editable.toString());
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,40 +53,20 @@ public class NoteEditActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.note_edit_activity_toolbar);
         setToolbarTitle();
         viewModelInit();
-        textChangeWatch();
+        enterNote.addTextChangedListener(textWatcher);
         toolbar.setNavigationOnClickListener(item -> viewModel.navigationClicked());
-        toolbarItemClicked();
+        toolbar.setOnMenuItemClickListener(onMenuItemClickListener);
     }
 
     private void sendTodoNote(TodoNotes todoNotes) {
         Intent intent = new Intent();
-        todoNotes.setNoteText(enterNote.getText().toString());
         intent.putExtra(TODO_NOTE, todoNotes);
         setResult(RESULT_OK, intent);
         finish();
     }
 
-    private void textChangeWatch() {
-        enterNote.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //        do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //        do nothing
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                viewModel.onTextNoteChanged(editable.toString());
-            }
-        });
-    }
-
-    private void showToast(Boolean emptyString) {
-        if (emptyString) {
+    private void showToast(Boolean needToShowError) {
+        if (needToShowError) {
             Toast.makeText(getApplicationContext(), R.string.note_edit_activity_edit_text_toast, Toast.LENGTH_SHORT).show();
             viewModel.clickReset();
         }
@@ -75,8 +81,8 @@ public class NoteEditActivity extends AppCompatActivity {
     }
 
     private void viewModelInit() {
-        viewModel = new ViewModelProvider(this).get(NoteEditViewModel.class);
-        viewModel.setNewTodo(getIntent().getParcelableExtra(TODO_NOTE));
+        viewModel = new ViewModelProvider(this, (ViewModelProvider.Factory)
+                new NoteEditModelFactory(getIntent().getParcelableExtra(TODO_NOTE))).get(NoteEditViewModel.class);
         viewModel.getTodoText().observe(this, todoText -> {
             if (!todoText.equals(enterNote.getText().toString())) {
                 enterNote.setText(todoText);
@@ -85,12 +91,5 @@ public class NoteEditActivity extends AppCompatActivity {
         viewModel.getToolbarNavigationEvent().observe(this, onNavigation -> finish());
         viewModel.getSendTodo().observe(this, this::sendTodoNote);
         viewModel.getEmptyTodoInput().observe(this, this::showToast);
-    }
-
-    private void toolbarItemClicked() {
-        toolbar.setOnMenuItemClickListener(onMenuItemClickListener -> {
-            viewModel.onBtnToolbarClicked(enterNote.getText().toString());
-            return true;
-        });
     }
 }

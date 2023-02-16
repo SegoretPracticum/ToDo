@@ -12,7 +12,17 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<TodoNotes> sendTodo = new MutableLiveData<>();
     private final MutableLiveData<String> todoTextChange = new MutableLiveData<>();
     private final MutableLiveData<Boolean> emptyTodoInput = new MutableLiveData<>();
-    private TodoNotes todoNote;
+    private final TodoNotes todoNote;
+
+    public NoteEditViewModel(TodoNotes todoNote) {
+        if (todoNote != null) {
+            this.todoNote = todoNote;
+            String textNote = todoNote.getNoteText();
+            todoTextChange.setValue(textNote);
+        } else {
+            this.todoNote = new TodoNotes("", UUID.randomUUID().toString());
+        }
+    }
 
     public LiveData<Boolean> getToolbarNavigationEvent() {
         return toolbarNavigationEvent;
@@ -35,25 +45,11 @@ public class NoteEditViewModel extends ViewModel {
     }
 
     public void onTextNoteChanged(String textNote) {
-        if (textNote.length() == 0) {
-            todoTextChange.setValue(textNote);
-        }
-    }
-
-    public void setNewTodo(TodoNotes todoNote) {
-        this.todoNote = todoNote;
-        if (todoNote != null) {
-            String textNote = todoNote.getNoteText();
-            todoTextChange.setValue(textNote);
-        }
+        todoTextChange.setValue(textNote);
     }
 
     public void onBtnToolbarClicked(String todoText) {
-        if (todoNote == null) {
-            todoNote = new TodoNotes("", UUID.randomUUID().toString());
-        } else {
-            todoNote.setNoteText(todoText);
-        }
+        todoNote.setNoteText(todoText);
         if (todoText.length() == 0) {
             emptyTodoInput.setValue(true);
         } else {
