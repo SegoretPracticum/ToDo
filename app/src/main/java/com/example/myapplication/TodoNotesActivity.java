@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -9,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -18,6 +21,8 @@ public class TodoNotesActivity extends AppCompatActivity {
     public static final String TODO_NOTE = "TODO_NOTE";
     private NotesAdapter notesAdapter;
     private RecyclerView notesView;
+    private FloatingActionButton addNote;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private TodoNotesViewModel viewModel;
 
     private final ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -32,10 +37,12 @@ public class TodoNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         notesView = findViewById(R.id.todo_notes_activity_res_view);
-        FloatingActionButton addNote = findViewById(R.id.todo_notes_activity_btn_add_note);
+        swipeRefreshLayout = findViewById(R.id.activity_todo_notes_list_swipe_refresh_layout);
+        addNote = findViewById(R.id.todo_notes_activity_btn_add_note);
         initViewModel();
         joinNotesAdapter();
         addNote.setOnClickListener(view -> viewModel.buttonClicked());
+        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.getNotesList());
     }
 
     private void onButtonClicked(Boolean btnClick) {
@@ -56,10 +63,34 @@ public class TodoNotesActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        viewModel = new ViewModelProvider(this).get(TodoNotesViewModel.class);
+        ConnectChecker connectChecker = new ConnectChecker(getApplicationContext());
+        viewModel = new ViewModelProvider(this, (ViewModelProvider.Factory)
+                new TodoNotesViewModelFactory(connectChecker)).get(TodoNotesViewModel.class);
         viewModel.getAddTodoEvent().observe(this, this::onButtonClicked);
         viewModel.getEditTodoEvent().observe(this, this::onItemClicked);
         viewModel.getTodoList().observe(this, todoList -> notesAdapter.refreshList(todoList));
+        viewModel.getInternetConnectionError().observe(this, internetConnectionError -> {
+            if (internetConnectionError) {
+                Toast.makeText(getApplicationContext(), R.string.internet_connection_toast,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        viewModel.getErrorWorkingWithServer().observe(this, errorOfInternet -> {
+            if (errorOfInternet) {
+                Toast.makeText(getApplicationContext(), R.string.failed_server_toast,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        viewModel.getRefreshTodoList().observe(this, startRefresh -> {
+            swipeRefreshLayout.setRefreshing(startRefresh);
+            if (startRefresh) {
+                addNote.setVisibility(View.GONE);
+                notesView.setEnabled(false);
+            } else {
+                addNote.setVisibility(View.VISIBLE);
+                notesView.setEnabled(true);
+            }
+        });
     }
 
     private void joinNotesAdapter() {

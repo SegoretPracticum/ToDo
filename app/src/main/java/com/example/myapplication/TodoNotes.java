@@ -7,7 +7,15 @@ import java.util.Objects;
 
 public class TodoNotes implements Parcelable {
     private String noteText;
-    private final String idTodo;
+    private String idTodo;
+
+    public void setIdTodo(String idTodo) {
+        this.idTodo = idTodo;
+    }
+
+    public String getIdTodo() {
+        return idTodo;
+    }
 
     public TodoNotes(String noteText, String idTodo) {
         this.noteText = noteText;
