@@ -6,16 +6,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class ConnectChecker implements ConnectCheck {
-    private final Context context;
+    private final ConnectivityManager connectivityManager;
 
     public ConnectChecker(Context context) {
-        this.context = context;
+        connectivityManager = (ConnectivityManager)
+                context.getSystemService(Service.CONNECTIVITY_SERVICE);
     }
 
     @Override
     public Boolean isOffline() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                context.getSystemService(Service.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return (networkInfo == null || !networkInfo.isConnected());
     }

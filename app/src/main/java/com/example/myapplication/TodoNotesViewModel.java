@@ -17,6 +17,7 @@ public class TodoNotesViewModel extends ViewModel {
     private final MutableLiveData<Boolean> errorWorkingWithServer = new MutableLiveData<>();
     private final HttpConnect httpConnect = new HttpConnect();
     private final ConnectCheck connectChecker;
+    private static final String REQUEST_GET = "GET";
 
     private final TodoCallback<List<TodoNotes>> todoCallback = new TodoCallback<List<TodoNotes>>() {
         @Override
@@ -62,7 +63,7 @@ public class TodoNotesViewModel extends ViewModel {
         } else {
             Thread thread = new Thread(() -> {
                 try {
-                    httpConnect.getTodoNotesListFromServer(todoCallback);
+                    httpConnect.getTodoNotesListFromServer(todoCallback, REQUEST_GET);
                 } catch (IOException e) {
                     todoCallback.onFail();
                 }

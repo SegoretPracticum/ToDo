@@ -13,18 +13,16 @@ public class HttpConnect {
     private HttpURLConnection httpURLConnection;
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
-    private static final String REQUEST_POST = "POST";
     private static final String REQUEST_PUT = "PUT";
     private static final String REQUEST_GET = "GET";
     private static final String URL_SERVER = "https://segoret-todo-default-rtdb.firebaseio.com/";
     private static final String JSON = ".json";
+    private String todoID;
 
-    public void sendTodo(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) throws IOException {
+    public void sendTodo(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback, String requestMethod) throws IOException {
         try {
-            chooseRequestMethod(todoNotes);
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.connect();
+            todoID = todoNotes.getTodoId();
+            connectionSettings(requestMethod);
             OutputStream out = httpURLConnection.getOutputStream();
             todoJsonWriter.writeJsonStream(out, todoNotes);
             if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
@@ -44,12 +42,9 @@ public class HttpConnect {
         }
     }
 
-    public void getTodoNotesListFromServer(TodoCallback<List<TodoNotes>> todoCallback) throws IOException {
+    public void getTodoNotesListFromServer(TodoCallback<List<TodoNotes>> todoCallback, String requestMethod) throws IOException {
         try {
-            httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + JSON).openConnection();
-            httpURLConnection.setRequestMethod(REQUEST_GET);
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.connect();
+            connectionSettings(requestMethod);
             if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 List<TodoNotes> todoNotesList = todoJsonReader.readJsonStream(inputStream);
@@ -62,14 +57,20 @@ public class HttpConnect {
         }
     }
 
-    private void chooseRequestMethod(TodoNotes todoNotes) throws IOException {
-        String todoID = todoNotes.getTodoId();
-        if (todoID == null) {
-            httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + JSON).openConnection();
-            httpURLConnection.setRequestMethod(REQUEST_POST);
-        } else {
-            httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + todoID + "/" + JSON).openConnection();
-            httpURLConnection.setRequestMethod(REQUEST_PUT);
+    private void connectionSettings(String requestMethod) throws IOException {
+        if (requestMethod.equals(REQUEST_PUT)) {
+        httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + todoID + "/" + JSON).openConnection();
         }
+        else {
+        httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + JSON).openConnection();
+        }
+        httpURLConnection.setRequestMethod(requestMethod);
+        if (!requestMethod.equals(REQUEST_GET)) {
+            httpURLConnection.setDoOutput(true);
+        }
+        if (requestMethod.equals(REQUEST_GET)){
+        httpURLConnection.setDoInput(true);
+        }
+        httpURLConnection.connect();
     }
 }

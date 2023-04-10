@@ -17,6 +17,8 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<Boolean> errorWorkingWithServer = new MutableLiveData<>();
     private final ConnectCheck connectChecker;
     private TodoNotes todoNote;
+    private static final String REQUEST_PUT = "PUT";
+    private static final String REQUEST_POST = "POST";
 
     private final TodoCallback<TodoNotes> todoCallback = new TodoCallback<TodoNotes>() {
         @Override
@@ -100,7 +102,13 @@ public class NoteEditViewModel extends ViewModel {
     public void sendTodoToServer(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) {
         Thread thread = new Thread(() -> {
             try {
-                httpConnect.sendTodo(todoNotes, todoCallback);
+                if (todoNotes.getTodoId() == null)
+                {
+                httpConnect.sendTodo(todoNotes, todoCallback, REQUEST_POST);
+                }
+                else {
+                    httpConnect.sendTodo(todoNotes, todoCallback, REQUEST_PUT);
+                }
             } catch (IOException e) {
                 todoCallback.onFail();
             }
