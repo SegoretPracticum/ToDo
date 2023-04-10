@@ -15,8 +15,8 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<Boolean> internetConnectionError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> sendTodoProcessing = new MutableLiveData<>();
     private final MutableLiveData<Boolean> errorWorkingWithServer = new MutableLiveData<>();
-    private final ConnectChecker connectChecker;
-    private final TodoNotes todoNote;
+    private final ConnectCheck connectChecker;
+    private TodoNotes todoNote;
 
     private final TodoCallback<TodoNotes> todoCallback = new TodoCallback<TodoNotes>() {
         @Override
@@ -34,14 +34,12 @@ public class NoteEditViewModel extends ViewModel {
     };
     private final HttpConnect httpConnect = new HttpConnect();
 
-    public NoteEditViewModel(TodoNotes todoNote, ConnectChecker connectChecker) {
+    public NoteEditViewModel(TodoNotes todoNote, ConnectCheck connectChecker) {
         this.connectChecker = connectChecker;
+        this.todoNote = todoNote;
         if (todoNote != null) {
-            this.todoNote = todoNote;
             String textNote = todoNote.getNoteText();
             todoTextChange.setValue(textNote);
-        } else {
-            this.todoNote = new TodoNotes("", null);
         }
     }
 
@@ -86,6 +84,9 @@ public class NoteEditViewModel extends ViewModel {
             internetConnectionError.setValue(true);
             internetConnectionError.setValue(false);
         } else {
+            if (todoNote == null) {
+                todoNote = new TodoNotes(todoText, null);
+            }
             todoNote.setNoteText(todoText);
             if (todoText.length() == 0) {
                 emptyTodoInput.setValue(true);

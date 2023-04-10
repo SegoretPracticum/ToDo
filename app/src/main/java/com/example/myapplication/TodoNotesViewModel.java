@@ -16,7 +16,7 @@ public class TodoNotesViewModel extends ViewModel {
     private final MutableLiveData<Boolean> internetConnectionError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> errorWorkingWithServer = new MutableLiveData<>();
     private final HttpConnect httpConnect = new HttpConnect();
-    private final ConnectChecker connectChecker;
+    private final ConnectCheck connectChecker;
 
     private final TodoCallback<List<TodoNotes>> todoCallback = new TodoCallback<List<TodoNotes>>() {
         @Override
@@ -30,10 +30,12 @@ public class TodoNotesViewModel extends ViewModel {
             errorWorkingWithServer.postValue(true);
             refreshTodoListEvent.postValue(false);
             errorWorkingWithServer.postValue(false);
+            internetConnectionError.postValue(false);
+            refreshTodoListEvent.postValue(false);
         }
     };
 
-    public TodoNotesViewModel(ConnectChecker connectChecker) {
+    public TodoNotesViewModel(ConnectCheck connectChecker) {
         this.connectChecker = connectChecker;
         if (connectChecker.isOffline()) {
             internetConnectionError.setValue(true);
@@ -56,6 +58,7 @@ public class TodoNotesViewModel extends ViewModel {
         if (connectChecker.isOffline()) {
             internetConnectionError.setValue(true);
             internetConnectionError.setValue(false);
+            refreshTodoListEvent.postValue(false);
         } else {
             Thread thread = new Thread(() -> {
                 try {

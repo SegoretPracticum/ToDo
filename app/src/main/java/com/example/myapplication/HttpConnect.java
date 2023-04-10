@@ -13,19 +13,15 @@ public class HttpConnect {
     private HttpURLConnection httpURLConnection;
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
+    private static final String REQUEST_POST = "POST";
+    private static final String REQUEST_PUT = "PUT";
+    private static final String REQUEST_GET = "GET";
     private static final String URL_SERVER = "https://segoret-todo-default-rtdb.firebaseio.com/";
     private static final String JSON = ".json";
 
     public void sendTodo(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) throws IOException {
         try {
-            String todoID = todoNotes.getIdTodo();
-            if (todoID == null) {
-                httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + JSON).openConnection();
-                httpURLConnection.setRequestMethod("POST");
-            } else {
-                httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + todoID + "/" + JSON).openConnection();
-                httpURLConnection.setRequestMethod("PUT");
-            }
+            chooseRequestMethod(todoNotes);
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
             httpURLConnection.connect();
@@ -33,9 +29,9 @@ public class HttpConnect {
             todoJsonWriter.writeJsonStream(out, todoNotes);
             if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
                 InputStream inputStream = httpURLConnection.getInputStream();
-                if (todoNotes.getIdTodo() == null) {
+                if (todoNotes.getTodoId() == null) {
                     String idServer = todoJsonReader.serverID(inputStream);
-                    todoNotes.setIdTodo(idServer);
+                    todoNotes.setTodoId(idServer);
                     todoCallback.onSuccess(todoNotes);
                 } else {
                     todoCallback.onSuccess(todoNotes);
@@ -51,7 +47,7 @@ public class HttpConnect {
     public void getTodoNotesListFromServer(TodoCallback<List<TodoNotes>> todoCallback) throws IOException {
         try {
             httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + JSON).openConnection();
-            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setRequestMethod(REQUEST_GET);
             httpURLConnection.setDoInput(true);
             httpURLConnection.connect();
             if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
@@ -63,6 +59,17 @@ public class HttpConnect {
             todoCallback.onFail();
         } finally {
             httpURLConnection.disconnect();
+        }
+    }
+
+    private void chooseRequestMethod(TodoNotes todoNotes) throws IOException {
+        String todoID = todoNotes.getTodoId();
+        if (todoID == null) {
+            httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + JSON).openConnection();
+            httpURLConnection.setRequestMethod(REQUEST_POST);
+        } else {
+            httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + todoID + "/" + JSON).openConnection();
+            httpURLConnection.setRequestMethod(REQUEST_PUT);
         }
     }
 }

@@ -9,11 +9,11 @@ public class TodoNotes implements Parcelable {
     private String noteText;
     private String idTodo;
 
-    public void setIdTodo(String idTodo) {
+    public void setTodoId(String idTodo) {
         this.idTodo = idTodo;
     }
 
-    public String getIdTodo() {
+    public String getTodoId() {
         return idTodo;
     }
 

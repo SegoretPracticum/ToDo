@@ -4,22 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-public class NoteEditModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class NoteEditModelFactory implements ViewModelProvider.Factory {
     private final TodoNotes todoNote;
-    private final ConnectChecker connectChecker;
+    private final ConnectCheck connectCheck;
 
-    public NoteEditModelFactory(TodoNotes todoNote, ConnectChecker connectChecker) {
+    public NoteEditModelFactory(TodoNotes todoNote, ConnectCheck connectCheck) {
         super();
         this.todoNote = todoNote;
-        this.connectChecker = connectChecker;
+        this.connectCheck = connectCheck;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass == NoteEditViewModel.class) {
-            return (T) new NoteEditViewModel(todoNote, connectChecker);
+            return (T) new NoteEditViewModel(todoNote, connectCheck);
         }
-        return null;
+        throw new IllegalArgumentException();
     }
 }

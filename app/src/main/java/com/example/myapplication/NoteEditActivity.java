@@ -87,9 +87,10 @@ public class NoteEditActivity extends AppCompatActivity {
     }
 
     private void viewModelInit() {
-        ConnectChecker connectChecker = new ConnectChecker(getApplicationContext());
-        viewModel = new ViewModelProvider(this, (ViewModelProvider.Factory)
-                new NoteEditModelFactory(getIntent().getParcelableExtra(TODO_NOTE), connectChecker)).get(NoteEditViewModel.class);
+        ConnectCheck connectChecker = new ConnectChecker(getApplicationContext());
+        viewModel = new ViewModelProvider(this,
+                new NoteEditModelFactory(getIntent().getParcelableExtra(TODO_NOTE),
+                        connectChecker)).get(NoteEditViewModel.class);
         viewModel.getTodoText().observe(this, todoText -> {
             if (!todoText.equals(enterNote.getText().toString())) {
                 enterNote.setText(todoText);

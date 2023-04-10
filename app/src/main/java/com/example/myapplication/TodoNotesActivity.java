@@ -63,8 +63,8 @@ public class TodoNotesActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        ConnectChecker connectChecker = new ConnectChecker(getApplicationContext());
-        viewModel = new ViewModelProvider(this, (ViewModelProvider.Factory)
+        ConnectCheck connectChecker = new ConnectChecker(getApplicationContext());
+        viewModel = new ViewModelProvider(this,
                 new TodoNotesViewModelFactory(connectChecker)).get(TodoNotesViewModel.class);
         viewModel.getAddTodoEvent().observe(this, this::onButtonClicked);
         viewModel.getEditTodoEvent().observe(this, this::onItemClicked);
@@ -82,13 +82,14 @@ public class TodoNotesActivity extends AppCompatActivity {
             }
         });
         viewModel.getRefreshTodoList().observe(this, startRefresh -> {
-            swipeRefreshLayout.setRefreshing(startRefresh);
             if (startRefresh) {
+                swipeRefreshLayout.setRefreshing(true);
                 addNote.setVisibility(View.GONE);
                 notesView.setEnabled(false);
             } else {
                 addNote.setVisibility(View.VISIBLE);
                 notesView.setEnabled(true);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }

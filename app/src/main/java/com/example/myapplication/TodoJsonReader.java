@@ -44,7 +44,7 @@ public class TodoJsonReader {
 
     public String serverID(InputStream in) throws IOException {
         JsonReader reader = new JsonReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        String idServer = null;
+        String serverID = null;
         while (reader.hasNext()) {
             if (reader.peek() == JsonToken.BEGIN_OBJECT) {
                 reader.beginObject();
@@ -54,13 +54,13 @@ public class TodoJsonReader {
             if (reader.peek() == JsonToken.NAME) {
                 String name = reader.nextName();
                 if (name.equals("name")) {
-                    idServer = reader.nextString();
+                    serverID = reader.nextString();
                 } else {
                     reader.skipValue();
                 }
             }
         }
-        return idServer;
+        return serverID;
     }
 
     private String readTodoText(JsonReader reader) throws IOException {
@@ -78,4 +78,3 @@ public class TodoJsonReader {
         return text;
     }
 }
-

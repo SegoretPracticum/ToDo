@@ -2,14 +2,10 @@ package com.example.myapplication;
 
 import android.util.JsonWriter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class TodoJsonWriter {
     private final static String TODO_TEXT = "todoText";
@@ -21,7 +17,7 @@ public class TodoJsonWriter {
         writer.close();
     }
 
-        private void writeMessage(JsonWriter writer, TodoNotes todoNotes) throws IOException {
+    private void writeMessage(JsonWriter writer, TodoNotes todoNotes) throws IOException {
         writer.beginObject();
         writer.name(TODO_TEXT).value(todoNotes.getNoteText());
         writer.endObject();
