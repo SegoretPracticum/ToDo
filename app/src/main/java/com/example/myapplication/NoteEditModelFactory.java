@@ -9,7 +9,6 @@ public class NoteEditModelFactory implements ViewModelProvider.Factory {
     private final ConnectCheck connectCheck;
 
     public NoteEditModelFactory(TodoNotes todoNote, ConnectCheck connectCheck) {
-        super();
         this.todoNote = todoNote;
         this.connectCheck = connectCheck;
     }

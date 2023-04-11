@@ -63,7 +63,7 @@ public class TodoNotesViewModel extends ViewModel {
         } else {
             Thread thread = new Thread(() -> {
                 try {
-                    httpConnect.getTodoNotesListFromServer(todoCallback, REQUEST_GET);
+                    httpConnect.getTodoNotesListFromServer(todoCallback);
                 } catch (IOException e) {
                     todoCallback.onFail();
                 }
