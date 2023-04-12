@@ -9,5 +9,7 @@
     <string name="todo_notes_activity_btn_content_description">A new note has been created</string>
     <string name="note_edit_activity_toolbar_title_edit_todo">Edit todo</string>
     <string name="note_edit_activity_toolbar_title_add_todo">Add todo</string>
+    <string name="failed_server_toast">Failed to connect to the server</string>
+    <string name="internet_connection_toast">There isn\'t internet connection</string>
 
 </resources>

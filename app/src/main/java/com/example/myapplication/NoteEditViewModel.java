@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.UUID;
+import java.io.IOException;
 
 public class NoteEditViewModel extends ViewModel {
 
@@ -12,16 +12,47 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<TodoNotes> sendTodo = new MutableLiveData<>();
     private final MutableLiveData<String> todoTextChange = new MutableLiveData<>();
     private final MutableLiveData<Boolean> emptyTodoInput = new MutableLiveData<>();
-    private final TodoNotes todoNote;
+    private final MutableLiveData<Boolean> internetConnectionError = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> sendTodoProcessing = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> errorWorkingWithServer = new MutableLiveData<>();
+    private final ConnectCheck connectChecker;
+    private TodoNotes todoNote;
 
-    public NoteEditViewModel(TodoNotes todoNote) {
+    private final TodoCallback<TodoNotes> todoCallback = new TodoCallback<TodoNotes>() {
+        @Override
+        public void onSuccess(TodoNotes todoNotes) {
+            sendTodo.postValue(todoNotes);
+            sendTodoProcessing.postValue(false);
+        }
+
+        @Override
+        public void onFail() {
+            errorWorkingWithServer.postValue(true);
+            sendTodoProcessing.postValue(false);
+            errorWorkingWithServer.postValue(false);
+        }
+    };
+    private final HttpConnect httpConnect = new HttpConnect();
+
+    public NoteEditViewModel(TodoNotes todoNote, ConnectCheck connectChecker) {
+        this.connectChecker = connectChecker;
+        this.todoNote = todoNote;
         if (todoNote != null) {
-            this.todoNote = todoNote;
             String textNote = todoNote.getNoteText();
             todoTextChange.setValue(textNote);
-        } else {
-            this.todoNote = new TodoNotes("", UUID.randomUUID().toString());
         }
+    }
+
+    public LiveData<Boolean> getErrorWorkingWithServer() {
+        return errorWorkingWithServer;
+    }
+
+    public LiveData<Boolean> getInternetConnectionError() {
+        return internetConnectionError;
+    }
+
+    public LiveData<Boolean> getSendTodoProcessing() {
+        return sendTodoProcessing;
     }
 
     public LiveData<Boolean> getToolbarNavigationEvent() {
@@ -49,12 +80,32 @@ public class NoteEditViewModel extends ViewModel {
     }
 
     public void onBtnToolbarClicked(String todoText) {
-        todoNote.setNoteText(todoText);
-        if (todoText.length() == 0) {
-            emptyTodoInput.setValue(true);
+        if (connectChecker.isOffline()) {
+            internetConnectionError.setValue(true);
+            internetConnectionError.setValue(false);
         } else {
-            sendTodo.setValue(todoNote);
+            if (todoNote == null) {
+                todoNote = new TodoNotes(todoText, null);
+            }
+            todoNote.setNoteText(todoText);
+            if (todoText.length() == 0) {
+                emptyTodoInput.setValue(true);
+            } else {
+                sendTodoToServer(todoNote, todoCallback);
+                sendTodoProcessing.setValue(true);
+            }
         }
+    }
+
+    public void sendTodoToServer(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) {
+        Thread thread = new Thread(() -> {
+            try {
+                httpConnect.sendTodo(todoNotes, todoCallback);
+            } catch (IOException e) {
+                todoCallback.onFail();
+            }
+        });
+        thread.start();
     }
 
     public LiveData<Boolean> getEmptyTodoInput() {
