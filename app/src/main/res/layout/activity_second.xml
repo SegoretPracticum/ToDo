@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/note_edit_activity_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TodoNotesActivity">
@@ -13,6 +14,7 @@
         android:layout_marginStart="@dimen/note_edit_activity_edit_text_enter_note_margin_start"
         android:layout_marginTop="@dimen/note_edit_activity_edit_text_enter_note_margin_top"
         android:layout_marginEnd="@dimen/note_edit_activity_edit_text_margin_end"
+        android:minHeight="@dimen/note_edit_activity_min_height"
         android:autofillHints="no"
         android:background="@color/note_edit_activity_edit_text_enter_note_text_color"
         android:hint="@string/note_edit_activity_edit_text_enter_note"

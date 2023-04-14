@@ -17,9 +17,33 @@ public class TodoNotesViewModel extends ViewModel {
     private final MutableLiveData<Boolean> errorWorkingWithServer = new MutableLiveData<>();
     private final HttpConnect httpConnect = new HttpConnect();
     private final ConnectCheck connectChecker;
-    private static final String REQUEST_GET = "GET";
+    private final AppIdentification appIdentification;
 
-    private final TodoCallback<List<TodoNotes>> todoCallback = new TodoCallback<List<TodoNotes>>() {
+    public LiveData<Boolean> getInternetConnectionError() {
+        return internetConnectionError;
+    }
+
+    public LiveData<Boolean> getErrorWorkingWithServer() {
+        return errorWorkingWithServer;
+    }
+
+    public LiveData<Boolean> getRefreshTodoList() {
+        return refreshTodoListEvent;
+    }
+
+    public LiveData<? extends List<TodoNotes>> getTodoList() {
+        return todoList;
+    }
+
+    public LiveData<Boolean> getAddTodoEvent() {
+        return addTodoEvent;
+    }
+
+    public LiveData<TodoNotes> getEditTodoEvent() {
+        return editTodoEvent;
+    }
+
+    private final TodoCallback<List<TodoNotes>> todoCallbackList = new TodoCallback<List<TodoNotes>>() {
         @Override
         public void onSuccess(List<TodoNotes> todoNoteList) {
             todoList.postValue((ArrayList<TodoNotes>) todoNoteList);
@@ -36,53 +60,35 @@ public class TodoNotesViewModel extends ViewModel {
         }
     };
 
-    public TodoNotesViewModel(ConnectCheck connectChecker) {
-        this.connectChecker = connectChecker;
-        if (connectChecker.isOffline()) {
-            internetConnectionError.setValue(true);
-        } else {
+    private final TodoCallback<String> todoCallbackAppID = new TodoCallback<String>() {
+        @Override
+        public void onSuccess(String result) {
             getNotesList();
         }
-    }
 
-    public MutableLiveData<Boolean> getInternetConnectionError() {
-        return internetConnectionError;
-    }
+        @Override
+        public void onFail() {
+            errorWorkingWithServer.postValue(true);
+            refreshTodoListEvent.postValue(false);
+            errorWorkingWithServer.postValue(false);
+            internetConnectionError.postValue(false);
+            refreshTodoListEvent.postValue(false);
+        }
+    };
 
-    public LiveData<Boolean> getErrorWorkingWithServer() {
-        return errorWorkingWithServer;
-    }
-
-    List<TodoNotes> todoNotesList = new ArrayList<>();
-
-    void getNotesList() {
+    public TodoNotesViewModel(ConnectCheck connectChecker, AppIdentification appIdentification) {
+        this.connectChecker = connectChecker;
+        this.appIdentification = appIdentification;
         if (connectChecker.isOffline()) {
             internetConnectionError.setValue(true);
-            internetConnectionError.setValue(false);
-            refreshTodoListEvent.postValue(false);
-        } else {
-            Thread thread = new Thread(() -> {
-                try {
-                    httpConnect.getTodoNotesListFromServer(todoCallback);
-                } catch (IOException e) {
-                    todoCallback.onFail();
-                }
-            });
-            thread.start();
+        } else if (appIdentification.getAppID() == null) {
+            getAppID();
             refreshTodoListEvent.postValue(true);
-        }
-    }
-
-    public LiveData<Boolean> getRefreshTodoList() {
-        return refreshTodoListEvent;
-    }
-
-    public LiveData<? extends List<TodoNotes>> getTodoList() {
-        return todoList;
+        } else getNotesList();
     }
 
     public void onResultReceived(TodoNotes todoNotes) {
-        todoNotesList = todoList.getValue();
+        ArrayList<TodoNotes> todoNotesList = todoList.getValue();
         if (todoNotesList == null) {
             todoNotesList = new ArrayList<>();
         }
@@ -92,23 +98,50 @@ public class TodoNotesViewModel extends ViewModel {
             int index = todoNotesList.indexOf(todoNotes);
             todoNotesList.set(index, todoNotes);
         }
-        todoList.setValue((ArrayList<TodoNotes>) todoNotesList);
+        todoList.setValue(todoNotesList);
     }
 
-    public LiveData<Boolean> getAddTodoEvent() {
-        return addTodoEvent;
+    public void getNotesList() {
+        if (connectChecker.isOffline()) {
+            internetConnectionError.setValue(true);
+            internetConnectionError.setValue(false);
+            refreshTodoListEvent.postValue(false);
+        } else {
+            Thread thread = new Thread(() -> {
+                try {
+                    httpConnect.getTodoNotesListFromServer(todoCallbackList, appIdentification);
+                } catch (IOException e) {
+                    todoCallbackList.onFail();
+                }
+            });
+            thread.start();
+            refreshTodoListEvent.postValue(true);
+        }
+    }
+
+    private void getAppID() {
+        Thread thread = new Thread(() -> {
+            try {
+                httpConnect.initApp(todoCallbackAppID, appIdentification);
+            } catch (IOException e) {
+                todoCallbackAppID.onFail();
+            }
+        });
+        thread.start();
+        refreshTodoListEvent.postValue(true);
     }
 
     public void buttonClicked() {
-        addTodoEvent.setValue(true);
+        if (connectChecker.isOffline()) {
+            internetConnectionError.setValue(true);
+            internetConnectionError.setValue(false);
+        } else {
+            addTodoEvent.setValue(true);
+        }
     }
 
     public void todoItemClicked(TodoNotes todoNotes) {
         editTodoEvent.setValue(todoNotes);
-    }
-
-    public LiveData<TodoNotes> getEditTodoEvent() {
-        return editTodoEvent;
     }
 
     public void clickReset() {

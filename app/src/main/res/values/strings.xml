@@ -3,13 +3,13 @@
     <string name="todo_notes_activity_btn_add_note">Add note</string>
     <string name="note">Note</string>
     <string name="note_edit_activity_edit_text_enter_note">Enter note</string>
-    <string name="note_edit_activity_edit_text_toast">Please, enter note</string>
+    <string name="note_edit_activity_edit_text_snackbar">Please, enter note</string>
     <string name="menu_toolbar_button_send_note">button_send_note</string>
     <string name="menu_toolbar_back">button_send_note</string>
     <string name="todo_notes_activity_btn_content_description">A new note has been created</string>
     <string name="note_edit_activity_toolbar_title_edit_todo">Edit todo</string>
     <string name="note_edit_activity_toolbar_title_add_todo">Add todo</string>
-    <string name="failed_server_toast">Failed to connect to the server</string>
-    <string name="internet_connection_toast">There isn\'t internet connection</string>
+    <string name="failed_server_snackbar">Failed to connect to the server</string>
+    <string name="internet_connection_snackbar">There isn\'t internet connection</string>
 
 </resources>

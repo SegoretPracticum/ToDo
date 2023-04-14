@@ -12,7 +12,7 @@ public class TodoJsonWriter {
 
     public void writeJsonStream(OutputStream out, TodoNotes todoNotes) throws IOException {
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
-        writer.setIndent("");
+        writer.setIndent(" ");
         writeMessage(writer, todoNotes);
         writer.close();
     }
@@ -21,5 +21,13 @@ public class TodoJsonWriter {
         writer.beginObject();
         writer.name(TODO_TEXT).value(todoNotes.getNoteText());
         writer.endObject();
+    }
+
+    public void writeInitJSON(OutputStream out) throws IOException {
+        JsonWriter writer = new JsonWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+        writer.setIndent(" ");
+        writer.beginObject();
+        writer.endObject();
+        writer.close();
     }
 }

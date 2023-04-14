@@ -17,6 +17,8 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<Boolean> errorWorkingWithServer = new MutableLiveData<>();
     private final ConnectCheck connectChecker;
     private TodoNotes todoNote;
+    private final HttpConnect httpConnect = new HttpConnect();
+    private final AppIdentification appIdentification;
 
     private final TodoCallback<TodoNotes> todoCallback = new TodoCallback<TodoNotes>() {
         @Override
@@ -32,11 +34,11 @@ public class NoteEditViewModel extends ViewModel {
             errorWorkingWithServer.postValue(false);
         }
     };
-    private final HttpConnect httpConnect = new HttpConnect();
 
-    public NoteEditViewModel(TodoNotes todoNote, ConnectCheck connectChecker) {
+    public NoteEditViewModel(TodoNotes todoNote, ConnectCheck connectChecker, AppIdentification appIdentification) {
         this.connectChecker = connectChecker;
         this.todoNote = todoNote;
+        this.appIdentification = appIdentification;
         if (todoNote != null) {
             String textNote = todoNote.getNoteText();
             todoTextChange.setValue(textNote);
@@ -59,20 +61,20 @@ public class NoteEditViewModel extends ViewModel {
         return toolbarNavigationEvent;
     }
 
-    public void navigationClicked() {
-        toolbarNavigationEvent.setValue(true);
-    }
-
-    public void clickReset() {
-        emptyTodoInput.setValue(false);
-    }
-
     public LiveData<TodoNotes> getSendTodo() {
         return sendTodo;
     }
 
     public LiveData<String> getTodoText() {
         return todoTextChange;
+    }
+
+    public LiveData<Boolean> getEmptyTodoInput() {
+        return emptyTodoInput;
+    }
+
+    public void navigationClicked() {
+        toolbarNavigationEvent.setValue(true);
     }
 
     public void onTextNoteChanged(String textNote) {
@@ -90,6 +92,7 @@ public class NoteEditViewModel extends ViewModel {
             todoNote.setNoteText(todoText);
             if (todoText.length() == 0) {
                 emptyTodoInput.setValue(true);
+                emptyTodoInput.setValue(false);
             } else {
                 sendTodoToServer(todoNote, todoCallback);
                 sendTodoProcessing.setValue(true);
@@ -100,15 +103,11 @@ public class NoteEditViewModel extends ViewModel {
     public void sendTodoToServer(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) {
         Thread thread = new Thread(() -> {
             try {
-                httpConnect.sendTodo(todoNotes, todoCallback);
+                httpConnect.sendTodo(todoNotes, todoCallback, appIdentification);
             } catch (IOException e) {
                 todoCallback.onFail();
             }
         });
         thread.start();
-    }
-
-    public LiveData<Boolean> getEmptyTodoInput() {
-        return emptyTodoInput;
     }
 }
