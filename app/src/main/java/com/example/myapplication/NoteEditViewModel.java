@@ -29,9 +29,19 @@ public class NoteEditViewModel extends ViewModel {
 
         @Override
         public void onFail() {
-            errorWorkingWithServer.postValue(true);
+            onFailResult();
+        }
+    };
+
+    private final TodoCallback<String> todoCallbackAppID = new TodoCallback<String>() {
+        @Override
+        public void onSuccess(String result) {
             sendTodoProcessing.postValue(false);
-            errorWorkingWithServer.postValue(false);
+        }
+
+        @Override
+        public void onFail() {
+           onFailResult();
         }
     };
 
@@ -39,6 +49,10 @@ public class NoteEditViewModel extends ViewModel {
         this.connectChecker = connectChecker;
         this.todoNote = todoNote;
         this.appIdentification = appIdentification;
+        if (appIdentification.getAppID() == null) {
+            getAppID();
+            sendTodoProcessing.postValue(true);
+        }
         if (todoNote != null) {
             String textNote = todoNote.getNoteText();
             todoTextChange.setValue(textNote);
@@ -84,23 +98,15 @@ public class NoteEditViewModel extends ViewModel {
     public void onBtnToolbarClicked(String todoText) {
         if (connectChecker.isOffline()) {
             internetConnectionError.setValue(true);
-            internetConnectionError.setValue(false);
+        } else if (todoNote == null) {
+            todoNote = new TodoNotes(todoText, null);
+            checkAndSendTodo(todoText);
         } else {
-            if (todoNote == null) {
-                todoNote = new TodoNotes(todoText, null);
-            }
-            todoNote.setNoteText(todoText);
-            if (todoText.length() == 0) {
-                emptyTodoInput.setValue(true);
-                emptyTodoInput.setValue(false);
-            } else {
-                sendTodoToServer(todoNote, todoCallback);
-                sendTodoProcessing.setValue(true);
-            }
+            checkAndSendTodo(todoText);
         }
     }
 
-    public void sendTodoToServer(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) {
+    private void sendTodoToServer(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) {
         Thread thread = new Thread(() -> {
             try {
                 httpConnect.sendTodo(todoNotes, todoCallback, appIdentification);
@@ -109,5 +115,44 @@ public class NoteEditViewModel extends ViewModel {
             }
         });
         thread.start();
+    }
+
+    private void getAppID() {
+        Thread thread = new Thread(() -> {
+            try {
+                httpConnect.initApp(todoCallbackAppID, appIdentification);
+            } catch (IOException e) {
+                todoCallbackAppID.onFail();
+            }
+        });
+        thread.start();
+        sendTodoProcessing.postValue(true);
+    }
+
+    public void resetConnectionErrors() {
+        internetConnectionError.setValue(false);
+    }
+
+    public void resetWorkingServerError() {
+        errorWorkingWithServer.postValue(false);
+    }
+
+    public void resetEmptyInputError() {
+        emptyTodoInput.setValue(false);
+    }
+
+    private void checkAndSendTodo(String todoText) {
+        if (todoText.length() == 0) {
+            emptyTodoInput.setValue(true);
+        } else {
+            todoNote.setNoteText(todoText);
+            sendTodoToServer(todoNote, todoCallback);
+            sendTodoProcessing.setValue(true);
+        }
+    }
+
+    private void onFailResult() {
+        errorWorkingWithServer.postValue(true);
+        sendTodoProcessing.postValue(false);
     }
 }

@@ -78,6 +78,7 @@ public class TodoNotesActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(constraintLayout, R.string.internet_connection_snackbar,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();
+                viewModel.resetConnectionErrors();
             }
         });
         viewModel.getErrorWorkingWithServer().observe(this, errorOfInternet -> {
@@ -85,6 +86,7 @@ public class TodoNotesActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(constraintLayout, R.string.failed_server_snackbar,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();
+                viewModel.resetWorkingServerError();
             }
         });
         viewModel.getRefreshTodoList().observe(this, startRefresh -> {

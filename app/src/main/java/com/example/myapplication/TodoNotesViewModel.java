@@ -52,11 +52,7 @@ public class TodoNotesViewModel extends ViewModel {
 
         @Override
         public void onFail() {
-            errorWorkingWithServer.postValue(true);
-            refreshTodoListEvent.postValue(false);
-            errorWorkingWithServer.postValue(false);
-            internetConnectionError.postValue(false);
-            refreshTodoListEvent.postValue(false);
+            onFailResult();
         }
     };
 
@@ -68,11 +64,7 @@ public class TodoNotesViewModel extends ViewModel {
 
         @Override
         public void onFail() {
-            errorWorkingWithServer.postValue(true);
-            refreshTodoListEvent.postValue(false);
-            errorWorkingWithServer.postValue(false);
-            internetConnectionError.postValue(false);
-            refreshTodoListEvent.postValue(false);
+            onFailResult();
         }
     };
 
@@ -104,7 +96,6 @@ public class TodoNotesViewModel extends ViewModel {
     public void getNotesList() {
         if (connectChecker.isOffline()) {
             internetConnectionError.setValue(true);
-            internetConnectionError.setValue(false);
             refreshTodoListEvent.postValue(false);
         } else {
             Thread thread = new Thread(() -> {
@@ -134,7 +125,6 @@ public class TodoNotesViewModel extends ViewModel {
     public void buttonClicked() {
         if (connectChecker.isOffline()) {
             internetConnectionError.setValue(true);
-            internetConnectionError.setValue(false);
         } else {
             addTodoEvent.setValue(true);
         }
@@ -147,5 +137,18 @@ public class TodoNotesViewModel extends ViewModel {
     public void clickReset() {
         addTodoEvent.setValue(false);
         editTodoEvent.setValue(null);
+    }
+
+    public void resetConnectionErrors() {
+        internetConnectionError.setValue(false);
+    }
+
+    public void resetWorkingServerError() {
+        errorWorkingWithServer.postValue(false);
+    }
+
+    private void onFailResult() {
+        errorWorkingWithServer.postValue(true);
+        refreshTodoListEvent.postValue(false);
     }
 }

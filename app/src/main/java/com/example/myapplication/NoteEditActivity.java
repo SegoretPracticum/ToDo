@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.ActionMenuItemView;
@@ -102,12 +101,15 @@ public class NoteEditActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(constraintLayout, R.string.note_edit_activity_edit_text_snackbar,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();
+                viewModel.resetEmptyInputError();
             }
         });
         viewModel.getErrorWorkingWithServer().observe(this, errorOfInternet -> {
             if (errorOfInternet) {
-                Toast.makeText(getApplicationContext(), R.string.failed_server_snackbar,
-                        Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, R.string.failed_server_snackbar,
+                        Snackbar.LENGTH_LONG);
+                snackbar.show();
+                viewModel.resetWorkingServerError();
             }
         });
         viewModel.getInternetConnectionError().observe(this, internetConnectionError -> {
@@ -115,6 +117,7 @@ public class NoteEditActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(constraintLayout, R.string.internet_connection_snackbar,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();
+                viewModel.resetConnectionErrors();
             }
         });
         viewModel.getSendTodoProcessing().observe(this, sendTodoProcessingGoes -> {
