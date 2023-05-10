@@ -17,6 +17,8 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<Boolean> errorWorkingWithServer = new MutableLiveData<>();
     private final ConnectCheck connectChecker;
     private TodoNotes todoNote;
+    private final HttpConnect httpConnect = new HttpConnect();
+    private final AppIdentification appIdentification;
 
     private final TodoCallback<TodoNotes> todoCallback = new TodoCallback<TodoNotes>() {
         @Override
@@ -27,16 +29,30 @@ public class NoteEditViewModel extends ViewModel {
 
         @Override
         public void onFail() {
-            errorWorkingWithServer.postValue(true);
-            sendTodoProcessing.postValue(false);
-            errorWorkingWithServer.postValue(false);
+            onFailResult();
         }
     };
-    private final HttpConnect httpConnect = new HttpConnect();
 
-    public NoteEditViewModel(TodoNotes todoNote, ConnectCheck connectChecker) {
+    private final TodoCallback<String> todoCallbackAppID = new TodoCallback<String>() {
+        @Override
+        public void onSuccess(String result) {
+            sendTodoProcessing.postValue(false);
+        }
+
+        @Override
+        public void onFail() {
+           onFailResult();
+        }
+    };
+
+    public NoteEditViewModel(TodoNotes todoNote, ConnectCheck connectChecker, AppIdentification appIdentification) {
         this.connectChecker = connectChecker;
         this.todoNote = todoNote;
+        this.appIdentification = appIdentification;
+        if (appIdentification.getAppID() == null) {
+            getAppID();
+            sendTodoProcessing.postValue(true);
+        }
         if (todoNote != null) {
             String textNote = todoNote.getNoteText();
             todoTextChange.setValue(textNote);
@@ -59,20 +75,20 @@ public class NoteEditViewModel extends ViewModel {
         return toolbarNavigationEvent;
     }
 
-    public void navigationClicked() {
-        toolbarNavigationEvent.setValue(true);
-    }
-
-    public void clickReset() {
-        emptyTodoInput.setValue(false);
-    }
-
     public LiveData<TodoNotes> getSendTodo() {
         return sendTodo;
     }
 
     public LiveData<String> getTodoText() {
         return todoTextChange;
+    }
+
+    public LiveData<Boolean> getEmptyTodoInput() {
+        return emptyTodoInput;
+    }
+
+    public void navigationClicked() {
+        toolbarNavigationEvent.setValue(true);
     }
 
     public void onTextNoteChanged(String textNote) {
@@ -82,25 +98,18 @@ public class NoteEditViewModel extends ViewModel {
     public void onBtnToolbarClicked(String todoText) {
         if (connectChecker.isOffline()) {
             internetConnectionError.setValue(true);
-            internetConnectionError.setValue(false);
+        } else if (todoNote == null) {
+            todoNote = new TodoNotes(todoText, null);
+            checkAndSendTodo(todoText);
         } else {
-            if (todoNote == null) {
-                todoNote = new TodoNotes(todoText, null);
-            }
-            todoNote.setNoteText(todoText);
-            if (todoText.length() == 0) {
-                emptyTodoInput.setValue(true);
-            } else {
-                sendTodoToServer(todoNote, todoCallback);
-                sendTodoProcessing.setValue(true);
-            }
+            checkAndSendTodo(todoText);
         }
     }
 
-    public void sendTodoToServer(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) {
+    private void sendTodoToServer(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback) {
         Thread thread = new Thread(() -> {
             try {
-                httpConnect.sendTodo(todoNotes, todoCallback);
+                httpConnect.sendTodo(todoNotes, todoCallback, appIdentification);
             } catch (IOException e) {
                 todoCallback.onFail();
             }
@@ -108,7 +117,42 @@ public class NoteEditViewModel extends ViewModel {
         thread.start();
     }
 
-    public LiveData<Boolean> getEmptyTodoInput() {
-        return emptyTodoInput;
+    private void getAppID() {
+        Thread thread = new Thread(() -> {
+            try {
+                httpConnect.initApp(todoCallbackAppID, appIdentification);
+            } catch (IOException e) {
+                todoCallbackAppID.onFail();
+            }
+        });
+        thread.start();
+        sendTodoProcessing.postValue(true);
+    }
+
+    public void resetConnectionErrors() {
+        internetConnectionError.setValue(false);
+    }
+
+    public void resetWorkingServerError() {
+        errorWorkingWithServer.postValue(false);
+    }
+
+    public void resetEmptyInputError() {
+        emptyTodoInput.setValue(false);
+    }
+
+    private void checkAndSendTodo(String todoText) {
+        if (todoText.length() == 0) {
+            emptyTodoInput.setValue(true);
+        } else {
+            todoNote.setNoteText(todoText);
+            sendTodoToServer(todoNote, todoCallback);
+            sendTodoProcessing.setValue(true);
+        }
+    }
+
+    private void onFailResult() {
+        errorWorkingWithServer.postValue(true);
+        sendTodoProcessing.postValue(false);
     }
 }
