@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.recyclerViewAdapter;
 
 import android.view.View;
 import android.widget.TextView;
@@ -6,6 +6,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.myapplication.R;
+import com.example.myapplication.Item.TodoNotes;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
     private final TextView note;

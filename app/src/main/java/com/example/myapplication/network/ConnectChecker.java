@@ -1,9 +1,11 @@
-package com.example.myapplication;
+package com.example.myapplication.network;
 
 import android.app.Service;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import com.example.myapplication.interfaces.ConnectCheck;
 
 public class ConnectChecker implements ConnectCheck {
     private final ConnectivityManager connectivityManager;

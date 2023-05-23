@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.recyclerViewAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,12 +9,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.R;
+import com.example.myapplication.Item.TodoNotes;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-    interface OnTodoClickListener {
+    public interface OnTodoClickListener {
         void onTodoClick(TodoNotes todoNotes);
 
     }
@@ -22,7 +25,7 @@ public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
     private List<TodoNotes> notesMassive = new ArrayList<>();
     private final OnTodoClickListener onTodoClickListener;
 
-    NotesAdapter(OnTodoClickListener onTodoClickListener) {
+    public NotesAdapter(OnTodoClickListener onTodoClickListener) {
         this.onTodoClickListener = onTodoClickListener;
     }
 

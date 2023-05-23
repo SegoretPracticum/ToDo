@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.myapplication.interfaces.AppIdentification;
+import com.example.myapplication.interfaces.ConnectCheck;
+import com.example.myapplication.interfaces.TodoMotesDAO;
+import com.example.myapplication.data.AppIDHelperManager;
+import com.example.myapplication.data.DBHelperManager;
+import com.example.myapplication.data.TodoListDBHelper;
+import com.example.myapplication.data.TodoNotesDBHelper;
+import com.example.myapplication.interfaces.TodoNotesAPI;
+import com.example.myapplication.network.ConnectChecker;
+import com.example.myapplication.R;
+import com.example.myapplication.network.HttpConnect;
+import com.example.myapplication.recyclerViewAdapter.NotesAdapter;
+import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.repository.TodoRepository;
+import com.example.myapplication.viewModels.TodoNotesViewModel;
+import com.example.myapplication.viewModels.TodoNotesViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -66,27 +82,25 @@ public class TodoNotesActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
+        TodoListDBHelper todoListDBHelper = new TodoListDBHelper(getApplicationContext());
+        TodoNotesDBHelper todoNotesDBHelper = new TodoNotesDBHelper(getApplicationContext());
         ConnectCheck connectChecker = new ConnectChecker(getApplicationContext());
-        AppIdentification appIdentification = new AppIdentifier(getApplicationContext());
+        AppIdentification appIdentification = new AppIDHelperManager(todoListDBHelper);
+        TodoMotesDAO todoMotesDAO = new DBHelperManager(todoNotesDBHelper);
+        TodoNotesAPI todoNotesAPI = new HttpConnect();
+        TodoRepository todoRepository = new TodoRepository(todoMotesDAO,appIdentification,
+                connectChecker, todoNotesAPI);
         viewModel = new ViewModelProvider(this,
-                new TodoNotesViewModelFactory(connectChecker, appIdentification)).get(TodoNotesViewModel.class);
+                new TodoNotesViewModelFactory(todoRepository)).get(TodoNotesViewModel.class);
         viewModel.getAddTodoEvent().observe(this, this::onButtonClicked);
         viewModel.getEditTodoEvent().observe(this, this::onItemClicked);
         viewModel.getTodoList().observe(this, todoList -> notesAdapter.refreshList(todoList));
-        viewModel.getInternetConnectionError().observe(this, internetConnectionError -> {
-            if (internetConnectionError) {
-                Snackbar snackbar = Snackbar.make(constraintLayout, R.string.internet_connection_snackbar,
+        viewModel.getError().observe(this, error -> {
+            if (error) {
+                Snackbar snackbar = Snackbar.make(constraintLayout, viewModel.getErrorMessage().getTextMessage(),
                         Snackbar.LENGTH_LONG);
                 snackbar.show();
                 viewModel.resetConnectionErrors();
-            }
-        });
-        viewModel.getErrorWorkingWithServer().observe(this, errorOfInternet -> {
-            if (errorOfInternet) {
-                Snackbar snackbar = Snackbar.make(constraintLayout, R.string.failed_server_snackbar,
-                        Snackbar.LENGTH_LONG);
-                snackbar.show();
-                viewModel.resetWorkingServerError();
             }
         });
         viewModel.getRefreshTodoList().observe(this, startRefresh -> {
@@ -95,9 +109,9 @@ public class TodoNotesActivity extends AppCompatActivity {
                 addNote.setVisibility(View.GONE);
                 notesView.setEnabled(false);
             } else {
-                addNote.setVisibility(View.VISIBLE);
                 notesView.setEnabled(true);
                 swipeRefreshLayout.setRefreshing(false);
+                addNote.setVisibility(View.VISIBLE);
             }
         });
     }

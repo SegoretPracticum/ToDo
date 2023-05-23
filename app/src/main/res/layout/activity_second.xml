@@ -5,7 +5,7 @@
     android:id="@+id/note_edit_activity_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TodoNotesActivity">
+    tools:context=".activities.TodoNotesActivity">
 
     <EditText
         android:id="@+id/note_edit_activity_edit_text_enter_note"

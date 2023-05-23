@@ -1,4 +1,10 @@
-package com.example.myapplication;
+package com.example.myapplication.network;
+
+import com.example.myapplication.appmessages.ErrorMessage;
+import com.example.myapplication.interfaces.AppIdentification;
+import com.example.myapplication.interfaces.TodoCallback;
+import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.interfaces.TodoNotesAPI;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class HttpConnect {
+public class HttpConnect implements TodoNotesAPI {
 
     private HttpURLConnection httpURLConnection;
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
@@ -20,7 +26,8 @@ public class HttpConnect {
     private static final String URL_SERVER = "https://segoret-todo-default-rtdb.firebaseio.com/TodoApp/";
     private static final String JSON = ".json";
 
-    public void sendTodo(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback, AppIdentification appIdentification) throws IOException {
+    @Override
+    public void sendTodo(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback, AppIdentification appIdentification) {
         try {
             String appLink = appIdentification.getAppID() + SLASH;
             String todoID = todoNotes.getTodoId();
@@ -43,13 +50,14 @@ public class HttpConnect {
                 }
             }
         } catch (IOException e) {
-            todoCallback.onFail();
+            todoCallback.onFail(ErrorMessage.SERVER_ERROR);
         } finally {
             httpURLConnection.disconnect();
         }
     }
 
-    public void getTodoNotesListFromServer(TodoCallback<List<TodoNotes>> todoCallback, AppIdentification appIdentification) throws IOException {
+    @Override
+    public void getTodoNotesListFromServer(TodoCallback<List<TodoNotes>> todoCallback, AppIdentification appIdentification) {
         try {
             String appLink = appIdentification.getAppID() + SLASH;
             connectionSettings(REQUEST_GET, appLink, EMPTY_LINK, false);
@@ -59,13 +67,14 @@ public class HttpConnect {
                 todoCallback.onSuccess(todoNotesList);
             }
         } catch (IOException e) {
-            todoCallback.onFail();
+            todoCallback.onFail(ErrorMessage.SERVER_ERROR);
         } finally {
             httpURLConnection.disconnect();
         }
     }
 
-    public void initApp(TodoCallback<String> todoCallback, AppIdentification appIdentification) throws IOException {
+    @Override
+    public void initApp(TodoCallback<String> todoCallback, AppIdentification appIdentification) {
         try {
             connectionSettings(REQUEST_POST, EMPTY_LINK, EMPTY_LINK, true);
             OutputStream out = httpURLConnection.getOutputStream();
@@ -77,7 +86,7 @@ public class HttpConnect {
                 todoCallback.onSuccess(appID);
             }
         } catch (IOException e) {
-            todoCallback.onFail();
+            todoCallback.onFail(ErrorMessage.SERVER_ERROR);
         } finally {
             httpURLConnection.disconnect();
         }
