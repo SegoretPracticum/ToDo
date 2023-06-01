@@ -15,8 +15,6 @@ public class TodoListDBHelper extends SQLiteOpenHelper {
                     _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     TodoDBContract.TodoListID.COLUMN_TODOLIST_ID + " TEXT)";
 
-    private static final String SQL_DELETE_TODOLIST_DB =
-            "DROP TABLE IF EXISTS " + TodoDBContract.TodoList.TABLE_NAME;
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "TodoList.db";
 
@@ -31,7 +29,6 @@ public class TodoListDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_TODOLIST_DB);
-        onCreate(db);
+//        do nothing
     }
 }

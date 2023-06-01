@@ -1,10 +1,10 @@
 package com.example.myapplication.network;
 
 import com.example.myapplication.appmessages.ErrorMessage;
-import com.example.myapplication.interfaces.AppIdentification;
 import com.example.myapplication.interfaces.TodoCallback;
 import com.example.myapplication.Item.TodoNotes;
 import com.example.myapplication.interfaces.TodoNotesAPI;
+import com.example.myapplication.interfaces.TodoNotesDAO;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ public class HttpConnect implements TodoNotesAPI {
     private static final String JSON = ".json";
 
     @Override
-    public void sendTodo(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback, AppIdentification appIdentification) {
+    public void sendTodo(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback, TodoNotesDAO appIdentification) {
         try {
             String appLink = appIdentification.getAppID() + SLASH;
             String todoID = todoNotes.getTodoId();
@@ -57,7 +57,7 @@ public class HttpConnect implements TodoNotesAPI {
     }
 
     @Override
-    public void getTodoNotesListFromServer(TodoCallback<List<TodoNotes>> todoCallback, AppIdentification appIdentification) {
+    public void getTodoNotesListFromServer(TodoCallback<List<TodoNotes>> todoCallback, TodoNotesDAO appIdentification) {
         try {
             String appLink = appIdentification.getAppID() + SLASH;
             connectionSettings(REQUEST_GET, appLink, EMPTY_LINK, false);
@@ -74,7 +74,7 @@ public class HttpConnect implements TodoNotesAPI {
     }
 
     @Override
-    public void initApp(TodoCallback<String> todoCallback, AppIdentification appIdentification) {
+    public void initApp(TodoCallback<String> todoCallback, TodoNotesDAO appIdentification) {
         try {
             connectionSettings(REQUEST_POST, EMPTY_LINK, EMPTY_LINK, true);
             OutputStream out = httpURLConnection.getOutputStream();
@@ -82,7 +82,6 @@ public class HttpConnect implements TodoNotesAPI {
             if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 String appID = todoJsonReader.serverID(inputStream);
-                appIdentification.setAppIdFromServer(appID);
                 todoCallback.onSuccess(appID);
             }
         } catch (IOException e) {

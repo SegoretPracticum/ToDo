@@ -14,28 +14,15 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<Boolean> toolbarNavigationEvent = new MutableLiveData<>();
     private final MutableLiveData<TodoNotes> sendTodo = new MutableLiveData<>();
     private final MutableLiveData<String> todoTextChange = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> error = new MutableLiveData<>();
+    private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<Boolean> sendTodoProcessing = new MutableLiveData<>();
     private final TodoRepository todoRepository;
     private TodoNotes todoNote;
-    private ErrorMessage errorMessage;
 
     private final TodoCallback<TodoNotes> todoCallback = new TodoCallback<TodoNotes>() {
         @Override
         public void onSuccess(TodoNotes todoNotes) {
             sendTodo.postValue(todoNotes);
-            sendTodoProcessing.postValue(false);
-        }
-
-        @Override
-        public void onFail(ErrorMessage errorMessage) {
-            onFailResult(errorMessage);
-        }
-    };
-
-    private final TodoCallback<String> supportiveCallback = new TodoCallback<String>() {
-        @Override
-        public void onSuccess(String result) {
             sendTodoProcessing.postValue(false);
         }
 
@@ -54,7 +41,7 @@ public class NoteEditViewModel extends ViewModel {
         }
     }
 
-    public LiveData<Boolean> getError() {
+    public LiveData<String> getError() {
         return error;
     }
 
@@ -92,22 +79,17 @@ public class NoteEditViewModel extends ViewModel {
     }
 
     public void resetConnectionErrors() {
-        error.setValue(false);
+        error.setValue("");
     }
 
     private void checkAndSendTodo(String todoText) {
         todoNote.setNoteText(todoText);
-        todoRepository.sendTodoNote(todoNote, supportiveCallback, todoCallback);
+        todoRepository.checkAndSendTodoNote(todoNote, todoCallback);
         sendTodoProcessing.setValue(true);
     }
 
     private void onFailResult(ErrorMessage errorMessage) {
-        NoteEditViewModel.this.errorMessage = errorMessage;
-        error.postValue(true);
+        error.postValue(errorMessage.getTextMessage());
         sendTodoProcessing.postValue(false);
-    }
-
-    public ErrorMessage getErrorMessage() {
-        return errorMessage;
     }
 }

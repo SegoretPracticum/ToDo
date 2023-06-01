@@ -17,11 +17,10 @@ public class TodoNotesViewModel extends ViewModel {
     private final MutableLiveData<Boolean> addTodoEvent = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoListEvent = new MutableLiveData<>();
     private final MutableLiveData<TodoNotes> editTodoEvent = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> error = new MutableLiveData<>();
+    private final MutableLiveData<String> error = new MutableLiveData<>();
     private final TodoRepository todoRepository;
-    private ErrorMessage errorMessage;
 
-    public LiveData<Boolean> getError() {
+    public LiveData<String> getError() {
         return error;
     }
 
@@ -54,22 +53,10 @@ public class TodoNotesViewModel extends ViewModel {
         }
     };
 
-    private final TodoCallback<String> todoCallbackAppID = new TodoCallback<String>() {
-        @Override
-        public void onSuccess(String result) {
-            getNotesList();
-        }
-
-        @Override
-        public void onFail(ErrorMessage errorMessage) {
-            onFailResult(errorMessage);
-        }
-    };
-
     public TodoNotesViewModel(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
         refreshTodoListEvent.setValue(true);
-        todoRepository.getTodoList(todoCallbackList, todoCallbackAppID);
+        todoRepository.getTodoList(todoCallbackList);
     }
 
     public void onResultReceived(TodoNotes todoNotes) {
@@ -88,8 +75,7 @@ public class TodoNotesViewModel extends ViewModel {
 
     public void getNotesList() {
         refreshTodoListEvent.postValue(true);
-        todoRepository.getTodoList(todoCallbackList, todoCallbackAppID);
-
+        todoRepository.getTodoList(todoCallbackList);
     }
 
     public void buttonClicked() {
@@ -106,16 +92,11 @@ public class TodoNotesViewModel extends ViewModel {
     }
 
     public void resetConnectionErrors() {
-        error.setValue(false);
+        error.setValue("");
     }
 
     private void onFailResult(ErrorMessage errorMessage) {
-        TodoNotesViewModel.this.errorMessage = errorMessage;
-        error.postValue(true);
+        error.postValue(errorMessage.getTextMessage());
         refreshTodoListEvent.postValue(false);
-    }
-
-    public ErrorMessage getErrorMessage() {
-        return errorMessage;
     }
 }

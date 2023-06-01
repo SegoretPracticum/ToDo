@@ -2,9 +2,8 @@ package com.example.myapplication.repository;
 
 import com.example.myapplication.appmessages.ErrorMessage;
 import com.example.myapplication.Item.TodoNotes;
-import com.example.myapplication.interfaces.AppIdentification;
 import com.example.myapplication.interfaces.ConnectCheck;
-import com.example.myapplication.interfaces.TodoMotesDAO;
+import com.example.myapplication.interfaces.TodoNotesDAO;
 import com.example.myapplication.interfaces.TodoCallback;
 import com.example.myapplication.interfaces.TodoNotesAPI;
 
@@ -15,87 +14,118 @@ import java.util.List;
 public class TodoRepository {
 
     private final ConnectCheck connectCheck;
-    private List<TodoNotes> todoNotesList = new ArrayList<>();
-    private final AppIdentification appIdentification;
     private final TodoNotesAPI todoNotesAPI;
-    private final TodoMotesDAO todoMotesDAO;
+    private final TodoNotesDAO todoNotesDAO;
+    private static final String TODOLIST_NUMBER = "1";
+    private String repositoryOperation;
+    private final String GET_LIST = "get list";
+    private final String SEND_TODO = "send Todo";
+    private TodoNotes todoNotes;
     private TodoCallback<TodoNotes> viewModelCallback;
-    private final TodoCallback<TodoNotes> todoCallback = new TodoCallback<TodoNotes>() {
+    private TodoCallback<List<TodoNotes>> viewModelListCallback;
+    private final TodoCallback<TodoNotes> repositoryTodoCallback = new TodoCallback<TodoNotes>() {
         @Override
         public void onSuccess(TodoNotes result) {
-        todoMotesDAO.updateDB(result,"1");
+        todoNotesDAO.updateDB(result,TODOLIST_NUMBER);
         viewModelCallback.onSuccess(result);
         }
 
         @Override
         public void onFail(ErrorMessage errorMessage) {
-
+        viewModelCallback.onFail(errorMessage);
         }
     };
 
-    private final TodoCallback<List<TodoNotes>> todoCallbackList = new TodoCallback<List<TodoNotes>>() {
+    private final TodoCallback<List<TodoNotes>> repositoryCallback = new TodoCallback<List<TodoNotes>>() {
         @Override
         public void onSuccess(List<TodoNotes> result) {
-        todoNotesList = result;
+                viewModelListCallback.onSuccess(result);
         }
 
         @Override
         public void onFail(ErrorMessage errorMessage) {
-            todoNotesList = todoMotesDAO.getTodoNotesList("1");
+            viewModelListCallback.onFail(errorMessage);
         }
     };
 
-    public TodoRepository(TodoMotesDAO todoMotesDAO, AppIdentification appIdentification,
-                          ConnectCheck connectCheck, TodoNotesAPI todoNotesAPI) {
-        this.todoMotesDAO = todoMotesDAO;
-        this.appIdentification = appIdentification;
+    private final TodoCallback <String> appIDCallback = new TodoCallback<String>() {
+        @Override
+        public void onSuccess(String appID) {
+            todoNotesDAO.setAppIdFromServer(appID);
+            if (repositoryOperation.equals(GET_LIST)){
+                viewModelListCallback.onSuccess(new ArrayList<>());
+            }
+            else {
+                sendTodo();
+            }
+            repositoryOperation = null;
+        }
+
+        @Override
+        public void onFail(ErrorMessage errorMessage) {
+            if (repositoryOperation.equals(GET_LIST)) {
+                viewModelListCallback.onFail(errorMessage);
+            }
+            else {
+            viewModelCallback.onFail(errorMessage);
+            }
+            repositoryOperation = null;
+        }
+    };
+
+    public TodoRepository(TodoNotesDAO todoNotesDAO, ConnectCheck connectCheck, TodoNotesAPI todoNotesAPI) {
+        this.todoNotesDAO = todoNotesDAO;
         this.connectCheck = connectCheck;
         this.todoNotesAPI = todoNotesAPI;
     }
 
-    public void sendTodoNote(TodoNotes todoNotes, TodoCallback<String> supportiveCallback, TodoCallback<TodoNotes> viewModelCallback) {
+    public void checkAndSendTodoNote(TodoNotes todoNotes, TodoCallback<TodoNotes> viewModelCallback) {
+        this.todoNotes = todoNotes;
         this.viewModelCallback = viewModelCallback;
         if (connectCheck.isOffline()){
-            supportiveCallback.onFail(ErrorMessage.CONNECTION_ERROR);
+            viewModelCallback.onFail(ErrorMessage.CONNECTION_ERROR);
         }
         else if (todoNotes.getNoteText().length() == 0){
-            supportiveCallback.onFail(ErrorMessage.EMPTY_TEXT);
+            viewModelCallback.onFail(ErrorMessage.EMPTY_TEXT);
         }
         else {
             Thread thread = new Thread(() -> {
                 try {
-                    if (appIdentification == null) {
-                        getAppID(supportiveCallback);
+                    if (todoNotesDAO.getAppID() == null) {
+                        repositoryOperation = SEND_TODO;
+                        getAppID(appIDCallback);
                     }
-                    todoNotesAPI.sendTodo(todoNotes, todoCallback, appIdentification);
-
+                    else {
+                        todoNotesAPI.sendTodo(todoNotes, repositoryTodoCallback, todoNotesDAO);
+                    }
                 } catch (IOException e) {
-                    viewModelCallback.onFail(ErrorMessage.SERVER_ERROR);
+                    repositoryCallback.onFail(ErrorMessage.SERVER_ERROR);
                 }
             });
             thread.start();
         }
     }
 
-    public void getTodoList(TodoCallback <List<TodoNotes>> repositoryCallback,TodoCallback <String> supportiveCallback){
+    public void getTodoList(TodoCallback <List<TodoNotes>> viewModelListCallback){
+        this.viewModelListCallback = viewModelListCallback;
         Thread thread = new Thread(() -> {
             try {
                 if (connectCheck.isOffline())
                 {
-                    supportiveCallback.onFail(ErrorMessage.CONNECTION_ERROR);
-                    todoNotesList = todoMotesDAO.getTodoNotesList("1");
-                    repositoryCallback.onSuccess(todoNotesList);
+                    viewModelListCallback.onFail(ErrorMessage.CONNECTION_ERROR);
+                    repositoryCallback.onSuccess(todoNotesDAO.getTodoNotesList(TODOLIST_NUMBER));
                 }
                 else {
-                    if (appIdentification == null){
-                        getAppID(supportiveCallback);
+                    if (todoNotesDAO.getAppID() == null){
+                        repositoryOperation = GET_LIST;
+                        getAppID(appIDCallback);
                     }
                     else {
-                        todoNotesAPI.getTodoNotesListFromServer(repositoryCallback, appIdentification);
+                        todoNotesAPI.getTodoNotesListFromServer(repositoryCallback, todoNotesDAO);
                     }
                 }
             } catch (IOException e) {
-                todoCallbackList.onFail(ErrorMessage.SERVER_ERROR);
+                repositoryCallback.onFail(ErrorMessage.SERVER_ERROR);
             }
         });
         thread.start();
@@ -104,9 +134,20 @@ public class TodoRepository {
     public void getAppID(TodoCallback <String> todoCallbackAppID) {
         Thread thread = new Thread(() -> {
             try {
-                todoNotesAPI.initApp(todoCallbackAppID, appIdentification);
+                todoNotesAPI.initApp(todoCallbackAppID, todoNotesDAO);
             } catch (IOException e) {
                 todoCallbackAppID.onFail(ErrorMessage.SERVER_ERROR);
+            }
+        });
+        thread.start();
+    }
+
+    private void sendTodo(){
+        Thread thread = new Thread(() -> {
+            try {
+                todoNotesAPI.sendTodo(todoNotes, repositoryTodoCallback, todoNotesDAO);
+            } catch (IOException e) {
+                repositoryCallback.onFail(ErrorMessage.SERVER_ERROR);
             }
         });
         thread.start();

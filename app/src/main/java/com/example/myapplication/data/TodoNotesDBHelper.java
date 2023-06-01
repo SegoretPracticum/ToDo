@@ -11,9 +11,6 @@ public class TodoNotesDBHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TodoDBContract.TodoList.TABLE_NAME + " (" +
                     TodoDBContract.TodoList.COLUMN_TODO_ID + " TEXT PRIMARY KEY, " +
                     TodoDBContract.TodoList.COLUMN_TODO_TEXT + " TEXT, " + TodoDBContract.TodoList.COLUMN_APP_ID + " TEXT)";
-
-    private static final String SQL_DELETE_TODO_NOTES_DB =
-            "DROP TABLE IF EXISTS " + TodoDBContract.TodoList.TABLE_NAME;
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "TodoNotes.db";
     public TodoNotesDBHelper(@Nullable Context context) {
@@ -27,7 +24,6 @@ public class TodoNotesDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_TODO_NOTES_DB);
-        onCreate(db);
+//        do nothing
     }
 }

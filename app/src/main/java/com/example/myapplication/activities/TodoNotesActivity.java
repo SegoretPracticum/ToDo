@@ -13,19 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.myapplication.interfaces.AppIdentification;
-import com.example.myapplication.interfaces.ConnectCheck;
-import com.example.myapplication.interfaces.TodoMotesDAO;
-import com.example.myapplication.data.AppIDHelperManager;
+import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.R;
 import com.example.myapplication.data.DBHelperManager;
 import com.example.myapplication.data.TodoListDBHelper;
 import com.example.myapplication.data.TodoNotesDBHelper;
+import com.example.myapplication.interfaces.ConnectCheck;
 import com.example.myapplication.interfaces.TodoNotesAPI;
+import com.example.myapplication.interfaces.TodoNotesDAO;
 import com.example.myapplication.network.ConnectChecker;
-import com.example.myapplication.R;
 import com.example.myapplication.network.HttpConnect;
 import com.example.myapplication.recyclerViewAdapter.NotesAdapter;
-import com.example.myapplication.Item.TodoNotes;
 import com.example.myapplication.repository.TodoRepository;
 import com.example.myapplication.viewModels.TodoNotesViewModel;
 import com.example.myapplication.viewModels.TodoNotesViewModelFactory;
@@ -82,22 +80,20 @@ public class TodoNotesActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        TodoListDBHelper todoListDBHelper = new TodoListDBHelper(getApplicationContext());
         TodoNotesDBHelper todoNotesDBHelper = new TodoNotesDBHelper(getApplicationContext());
+        TodoListDBHelper todoListDBHelper = new TodoListDBHelper(getApplicationContext());
         ConnectCheck connectChecker = new ConnectChecker(getApplicationContext());
-        AppIdentification appIdentification = new AppIDHelperManager(todoListDBHelper);
-        TodoMotesDAO todoMotesDAO = new DBHelperManager(todoNotesDBHelper);
+        TodoNotesDAO todoNotesDAO = new DBHelperManager(todoNotesDBHelper, todoListDBHelper);
         TodoNotesAPI todoNotesAPI = new HttpConnect();
-        TodoRepository todoRepository = new TodoRepository(todoMotesDAO,appIdentification,
-                connectChecker, todoNotesAPI);
+        TodoRepository todoRepository = new TodoRepository(todoNotesDAO, connectChecker, todoNotesAPI);
         viewModel = new ViewModelProvider(this,
                 new TodoNotesViewModelFactory(todoRepository)).get(TodoNotesViewModel.class);
         viewModel.getAddTodoEvent().observe(this, this::onButtonClicked);
         viewModel.getEditTodoEvent().observe(this, this::onItemClicked);
         viewModel.getTodoList().observe(this, todoList -> notesAdapter.refreshList(todoList));
         viewModel.getError().observe(this, error -> {
-            if (error) {
-                Snackbar snackbar = Snackbar.make(constraintLayout, viewModel.getErrorMessage().getTextMessage(),
+            if (!error.equals("")) {
+                Snackbar snackbar = Snackbar.make(constraintLayout, error,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();
                 viewModel.resetConnectionErrors();
