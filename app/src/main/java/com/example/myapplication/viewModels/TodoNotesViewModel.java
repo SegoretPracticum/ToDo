@@ -1,5 +1,7 @@
 package com.example.myapplication.viewModels;
 
+import static com.example.myapplication.activities.TodoNotesActivity.NO_ERROR;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -92,7 +94,7 @@ public class TodoNotesViewModel extends ViewModel {
     }
 
     public void resetConnectionErrors() {
-        error.setValue("");
+        error.setValue(NO_ERROR);
     }
 
     private void onFailResult(ErrorMessage errorMessage) {

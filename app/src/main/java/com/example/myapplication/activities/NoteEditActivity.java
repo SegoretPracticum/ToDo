@@ -1,5 +1,6 @@
 package com.example.myapplication.activities;
 
+import static com.example.myapplication.activities.TodoNotesActivity.NO_ERROR;
 import static com.example.myapplication.activities.TodoNotesActivity.TODO_NOTE;
 
 import android.content.Intent;
@@ -102,7 +103,7 @@ public class NoteEditActivity extends AppCompatActivity {
         ConnectCheck connectChecker = new ConnectChecker(getApplicationContext());
         TodoNotesDAO todoNotesDAO = new DBHelperManager(todoNotesDBHelper, todoListDBHelper);
         TodoNotesAPI todoNotesAPI = new HttpConnect();
-        TodoRepository todoRepository = new TodoRepository(todoNotesDAO, connectChecker,todoNotesAPI);
+        TodoRepository todoRepository = TodoRepository.getInstance(todoNotesDAO, connectChecker,todoNotesAPI);
         viewModel = new ViewModelProvider(this,
                 new NoteEditModelFactory(getIntent().getParcelableExtra(TODO_NOTE),
                         todoRepository)).get(NoteEditViewModel.class);
@@ -114,7 +115,7 @@ public class NoteEditActivity extends AppCompatActivity {
         viewModel.getToolbarNavigationEvent().observe(this, onNavigation -> finish());
         viewModel.getSendTodo().observe(this, this::sendTodoNote);
         viewModel.getError().observe(this, error -> {
-            if (!error.equals("")) {
+            if (!error.equals(NO_ERROR)) {
                 Snackbar snackbar = Snackbar.make(constraintLayout,error,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();

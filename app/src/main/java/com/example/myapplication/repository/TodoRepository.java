@@ -1,11 +1,13 @@
 package com.example.myapplication.repository;
 
-import com.example.myapplication.appmessages.ErrorMessage;
+import static com.example.myapplication.network.HttpConnect.REQUEST_PUT;
+
 import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.appmessages.ErrorMessage;
 import com.example.myapplication.interfaces.ConnectCheck;
-import com.example.myapplication.interfaces.TodoNotesDAO;
 import com.example.myapplication.interfaces.TodoCallback;
 import com.example.myapplication.interfaces.TodoNotesAPI;
+import com.example.myapplication.interfaces.TodoNotesDAO;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,17 +18,33 @@ public class TodoRepository {
     private final ConnectCheck connectCheck;
     private final TodoNotesAPI todoNotesAPI;
     private final TodoNotesDAO todoNotesDAO;
-    private static final String TODOLIST_NUMBER = "1";
+    public static final String TODOLIST_NUMBER = "1";
     private String repositoryOperation;
-    private final String GET_LIST = "get list";
-    private final String SEND_TODO = "send Todo";
+    private final static String GET_LIST = "get list";
+    private final static String SEND_TODO = "send Todo";
     private TodoNotes todoNotes;
+    private static volatile TodoRepository instance;
+    public static TodoRepository getInstance(TodoNotesDAO todoNotesDAO, ConnectCheck connectCheck, TodoNotesAPI todoNotesAPI) {
+        if (instance == null) {
+            synchronized (TodoRepository.class) {
+                if (instance == null) {
+                    instance = new TodoRepository(todoNotesDAO, connectCheck, todoNotesAPI);
+                }
+            }
+        }
+        return instance;
+    }
     private TodoCallback<TodoNotes> viewModelCallback;
     private TodoCallback<List<TodoNotes>> viewModelListCallback;
     private final TodoCallback<TodoNotes> repositoryTodoCallback = new TodoCallback<TodoNotes>() {
         @Override
         public void onSuccess(TodoNotes result) {
-        todoNotesDAO.updateDB(result,TODOLIST_NUMBER);
+            if (todoNotesAPI.getRequestMethod().equals(REQUEST_PUT))
+            {todoNotesDAO.editTodoInDB(result,TODOLIST_NUMBER);
+            }
+            else {
+                todoNotesDAO.addTodoToDB(result, TODOLIST_NUMBER);
+            }
         viewModelCallback.onSuccess(result);
         }
 
@@ -39,6 +57,10 @@ public class TodoRepository {
     private final TodoCallback<List<TodoNotes>> repositoryCallback = new TodoCallback<List<TodoNotes>>() {
         @Override
         public void onSuccess(List<TodoNotes> result) {
+            if (!connectCheck.isOffline())
+            {
+                todoNotesDAO.updateTodoList(result);
+            }
                 viewModelListCallback.onSuccess(result);
         }
 

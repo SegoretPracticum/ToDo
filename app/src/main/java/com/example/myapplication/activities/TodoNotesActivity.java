@@ -40,6 +40,7 @@ public class TodoNotesActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private TodoNotesViewModel viewModel;
     private ConstraintLayout constraintLayout;
+    public final static String NO_ERROR = "no error";
 
     private final ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null) {
@@ -85,14 +86,14 @@ public class TodoNotesActivity extends AppCompatActivity {
         ConnectCheck connectChecker = new ConnectChecker(getApplicationContext());
         TodoNotesDAO todoNotesDAO = new DBHelperManager(todoNotesDBHelper, todoListDBHelper);
         TodoNotesAPI todoNotesAPI = new HttpConnect();
-        TodoRepository todoRepository = new TodoRepository(todoNotesDAO, connectChecker, todoNotesAPI);
+        TodoRepository todoRepository = TodoRepository.getInstance(todoNotesDAO, connectChecker, todoNotesAPI);
         viewModel = new ViewModelProvider(this,
                 new TodoNotesViewModelFactory(todoRepository)).get(TodoNotesViewModel.class);
         viewModel.getAddTodoEvent().observe(this, this::onButtonClicked);
         viewModel.getEditTodoEvent().observe(this, this::onItemClicked);
         viewModel.getTodoList().observe(this, todoList -> notesAdapter.refreshList(todoList));
         viewModel.getError().observe(this, error -> {
-            if (!error.equals("")) {
+            if (!error.equals(NO_ERROR)) {
                 Snackbar snackbar = Snackbar.make(constraintLayout, error,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();

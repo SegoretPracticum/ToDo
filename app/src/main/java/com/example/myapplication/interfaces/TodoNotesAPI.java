@@ -10,4 +10,5 @@ public interface TodoNotesAPI {
     void sendTodo(TodoNotes todoNotes, TodoCallback<TodoNotes> todoCallback, TodoNotesDAO todoNotesDAO) throws IOException;
     void getTodoNotesListFromServer(TodoCallback<List<TodoNotes>> todoCallback, TodoNotesDAO todoNotesDAO) throws IOException;
     void initApp(TodoCallback<String> todoCallback, TodoNotesDAO todoNotesDAO) throws IOException;
+    String getRequestMethod();
 }

@@ -18,9 +18,10 @@ public class HttpConnect implements TodoNotesAPI {
     private HttpURLConnection httpURLConnection;
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
-    private static final String REQUEST_PUT = "PUT";
+    private String requestMethod;
+    public static final String REQUEST_PUT = "PUT";
     private static final String REQUEST_GET = "GET";
-    private static final String REQUEST_POST = "POST";
+    public static final String REQUEST_POST = "POST";
     private final static String SLASH = "/";
     private static final String EMPTY_LINK = "";
     private static final String URL_SERVER = "https://segoret-todo-default-rtdb.firebaseio.com/TodoApp/";
@@ -92,10 +93,16 @@ public class HttpConnect implements TodoNotesAPI {
     }
 
     private void connectionSettings(String requestMethod, String appLink, String todoLink, Boolean setDoOutput) throws IOException {
+        this.requestMethod = requestMethod;
         httpURLConnection = (HttpURLConnection) new URL(URL_SERVER + appLink + todoLink + JSON).openConnection();
         httpURLConnection.setRequestMethod(requestMethod);
         httpURLConnection.setDoOutput(setDoOutput);
         httpURLConnection.setDoInput(true);
         httpURLConnection.connect();
+    }
+
+    @Override
+    public String getRequestMethod(){
+        return requestMethod;
     }
 }

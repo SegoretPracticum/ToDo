@@ -1,5 +1,7 @@
 package com.example.myapplication.viewModels;
 
+import static com.example.myapplication.activities.TodoNotesActivity.NO_ERROR;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -18,6 +20,7 @@ public class NoteEditViewModel extends ViewModel {
     private final MutableLiveData<Boolean> sendTodoProcessing = new MutableLiveData<>();
     private final TodoRepository todoRepository;
     private TodoNotes todoNote;
+
 
     private final TodoCallback<TodoNotes> todoCallback = new TodoCallback<TodoNotes>() {
         @Override
@@ -79,7 +82,7 @@ public class NoteEditViewModel extends ViewModel {
     }
 
     public void resetConnectionErrors() {
-        error.setValue("");
+        error.setValue(NO_ERROR);
     }
 
     private void checkAndSendTodo(String todoText) {

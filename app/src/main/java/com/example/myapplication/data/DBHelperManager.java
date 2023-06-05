@@ -1,18 +1,35 @@
 package com.example.myapplication.data;
 
+import static com.example.myapplication.repository.TodoRepository.TODOLIST_NUMBER;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.BaseColumns;
 
 import com.example.myapplication.Item.TodoNotes;
 import com.example.myapplication.interfaces.TodoNotesDAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DBHelperManager implements TodoNotesDAO {
+    private final static String EDIT_TODO_QUERY = "UPDATE " + TodoDBContract.TodoList.TABLE_NAME + " SET " +
+            TodoDBContract.TodoList.COLUMN_TODO_TEXT + " = '%s' WHERE " + TodoDBContract.TodoList.COLUMN_TODO_ID +
+            " = '%s'";
+    private final static String ADD_TODO_QUERY = "INSERT INTO " + TodoDBContract.TodoList.TABLE_NAME + " (" +
+            TodoDBContract.TodoList.COLUMN_TODO_TEXT + ", " + TodoDBContract.TodoList.COLUMN_TODO_ID +
+            ", " + TodoDBContract.TodoList.COLUMN_APP_ID + ") VALUES ( '%s', '%s', '%s' )";
+    private final static String GET_TODO_LIST_QUERY = "SELECT " + TodoDBContract.TodoList.COLUMN_TODO_ID + ", " +
+            TodoDBContract.TodoList.COLUMN_TODO_TEXT + " FROM " + TodoDBContract.TodoList.TABLE_NAME +
+            " WHERE " + TodoDBContract.TodoList.COLUMN_APP_ID + " = '%s'";
+    private final static String FIND_APP_ID = "SELECT " + TodoDBContract.TodoListID.COLUMN_TODOLIST_ID + " FROM " +
+            TodoDBContract.TodoListID.TABLE_NAME;
+    private final static String UPDATE_LIST_QUERY = "REPLACE INTO " + TodoDBContract.TodoList.TABLE_NAME + " (" +
+            TodoDBContract.TodoList.COLUMN_TODO_ID + ", " + TodoDBContract.TodoList.COLUMN_TODO_TEXT + ", "
+            + TodoDBContract.TodoList.COLUMN_APP_ID + ") VALUES ( '%s', '%s', '%s')";
+    private final static String ADD_APP_ID = "INSERT INTO " + TodoDBContract.TodoListID.TABLE_NAME + " (" +
+            TodoDBContract.TodoListID.COLUMN_TODOLIST_ID + ") " + "VALUES ('%s')";
     private final TodoNotesDBHelper todoNotesDBHelper;
     private final TodoListDBHelper todoListDBHelper;
-
 
     public DBHelperManager(TodoNotesDBHelper todoNotesDBHelper, TodoListDBHelper todoListDBHelper) {
         this.todoNotesDBHelper = todoNotesDBHelper;
@@ -20,70 +37,63 @@ public class DBHelperManager implements TodoNotesDAO {
     }
 
     @Override
-    public void updateDB(TodoNotes todoNotes, String appID) {
+    public void addTodoToDB(TodoNotes todoNotes, String appID) {
         SQLiteDatabase dataBase = todoNotesDBHelper.getWritableDatabase();
-        String findTodoByIDQuery = "SELECT " + TodoDBContract.TodoList.COLUMN_TODO_ID +
-                " FROM " + TodoDBContract.TodoList.TABLE_NAME + " WHERE " +
-                TodoDBContract.TodoList.COLUMN_TODO_ID + " = '%s'";
-        Cursor cursor = dataBase.rawQuery(String.format(findTodoByIDQuery,todoNotes.getTodoId()),null);
-        String todoID = "";
-        while (cursor.moveToNext()) {
-            todoID = cursor.getString(
-                    cursor.getColumnIndexOrThrow(TodoDBContract.TodoList.COLUMN_TODO_ID));
-        }
-        cursor.close();
-        if (todoID.equals("")) {
-            String addTodoQuery = "INSERT INTO " + TodoDBContract.TodoList.TABLE_NAME + " (" +
-                    TodoDBContract.TodoList.COLUMN_TODO_TEXT + ", " + TodoDBContract.TodoList.COLUMN_TODO_ID +
-                    ", " + TodoDBContract.TodoList.COLUMN_APP_ID + ") VALUES ( '%s', '%s', '%s' )";
-            dataBase.execSQL(String.format(addTodoQuery,todoNotes.getNoteText(),todoNotes.getTodoId(), appID));
-        } else {
-            String editTodoQuery = "UPDATE " + TodoDBContract.TodoList.TABLE_NAME + " SET " +
-                    TodoDBContract.TodoList.COLUMN_TODO_TEXT + " = '%s' WHERE " + TodoDBContract.TodoList.COLUMN_TODO_ID +
-                    " = '%s'";
-            dataBase.execSQL(String.format(editTodoQuery,todoNotes.getNoteText(),todoID));
-        }
+        dataBase.execSQL(String.format(ADD_TODO_QUERY, todoNotes.getNoteText(), todoNotes.getTodoId(), appID));
+    }
+
+    @Override
+    public void editTodoInDB(TodoNotes todoNotes, String appID) {
+        SQLiteDatabase dataBase = todoNotesDBHelper.getWritableDatabase();
+        dataBase.execSQL(String.format(EDIT_TODO_QUERY, todoNotes.getNoteText(), todoNotes.getTodoId()));
     }
 
     @Override
     public ArrayList<TodoNotes> getTodoNotesList(String appID) {
         SQLiteDatabase dataBase = todoNotesDBHelper.getReadableDatabase();
-        String getTodoListQuery = "SELECT " + TodoDBContract.TodoList.COLUMN_TODO_ID + ", " +
-                TodoDBContract.TodoList.COLUMN_TODO_TEXT + " FROM " + TodoDBContract.TodoList.TABLE_NAME +
-                " WHERE " + TodoDBContract.TodoList.COLUMN_APP_ID + " = '%s'";
         ArrayList<TodoNotes> todoList = new ArrayList<>();
-        Cursor cursor = dataBase.rawQuery(String.format(getTodoListQuery,appID), null);
-        while (cursor.moveToNext()) {
-            String todoID = cursor.getString(
-                    cursor.getColumnIndexOrThrow(TodoDBContract.TodoList.COLUMN_TODO_ID));
-            String todoText = cursor.getString(cursor.getColumnIndexOrThrow(TodoDBContract.TodoList.COLUMN_TODO_TEXT));
-            todoList.add(new TodoNotes(todoText, todoID));
+        try (Cursor cursor = dataBase.rawQuery(String.format(GET_TODO_LIST_QUERY, appID), null)) {
+            while (cursor.moveToNext()) {
+                String todoID = cursor.getString(
+                        cursor.getColumnIndexOrThrow(TodoDBContract.TodoList.COLUMN_TODO_ID));
+                String todoText = cursor.getString(cursor.getColumnIndexOrThrow(TodoDBContract.TodoList.COLUMN_TODO_TEXT));
+                todoList.add(new TodoNotes(todoText, todoID));
+            }
+            return todoList;
         }
-        cursor.close();
-        return todoList;
     }
 
     @Override
     public String getAppID() {
         SQLiteDatabase dataBase = todoListDBHelper.getReadableDatabase();
-        String findAppID = "SELECT "+ TodoDBContract.TodoListID.COLUMN_TODOLIST_ID + " FROM " +
-                TodoDBContract.TodoListID.TABLE_NAME + " WHERE " + BaseColumns._ID + " = '%s'";
-        String appIdNumber = "1";
-        Cursor cursor = dataBase.rawQuery(String.format(findAppID, appIdNumber),null);
-        String appID = null;
-        while (cursor.moveToNext()) {
-            appID = cursor.getString(
-                    cursor.getColumnIndexOrThrow(TodoDBContract.TodoListID.COLUMN_TODOLIST_ID));
+        try (Cursor cursor = dataBase.rawQuery(FIND_APP_ID, null)) {
+            String appID = null;
+            int index = cursor.getColumnIndex(TodoDBContract.TodoListID.COLUMN_TODOLIST_ID);
+            if (cursor.moveToFirst()) {
+                appID = cursor.getString(index);
+            }
+            return appID;
         }
-        cursor.close();
-        return appID;
     }
 
     @Override
     public void setAppIdFromServer(String appID) {
         SQLiteDatabase dataBase = todoListDBHelper.getWritableDatabase();
-        String addAppId = "INSERT INTO " + TodoDBContract.TodoListID.TABLE_NAME + " (" +
-                TodoDBContract.TodoListID.COLUMN_TODOLIST_ID + ") " + "VALUES ('%s')";
-        dataBase.execSQL(String.format(addAppId, appID));
+        dataBase.execSQL(String.format(ADD_APP_ID, appID));
+    }
+
+    @Override
+    public void updateTodoList(List<TodoNotes> todoNotesList) {
+        SQLiteDatabase database = todoNotesDBHelper.getWritableDatabase();
+        database.beginTransaction();
+        try {
+            for (TodoNotes todoNotes :
+                    todoNotesList) {
+                database.execSQL(String.format(UPDATE_LIST_QUERY, todoNotes.getTodoId(), todoNotes.getNoteText(), TODOLIST_NUMBER));
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
     }
 }
