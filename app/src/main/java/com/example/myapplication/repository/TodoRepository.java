@@ -2,8 +2,8 @@ package com.example.myapplication.repository;
 
 import static com.example.myapplication.network.HttpConnect.REQUEST_PUT;
 
-import com.example.myapplication.Item.TodoNotes;
-import com.example.myapplication.appmessages.ErrorMessage;
+import com.example.myapplication.model.TodoNotes;
+import com.example.myapplication.utils.ErrorMessage;
 import com.example.myapplication.interfaces.ConnectCheck;
 import com.example.myapplication.interfaces.TodoCallback;
 import com.example.myapplication.interfaces.TodoNotesAPI;

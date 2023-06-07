@@ -1,8 +1,8 @@
 package com.example.myapplication.network;
 
-import com.example.myapplication.appmessages.ErrorMessage;
+import com.example.myapplication.utils.ErrorMessage;
 import com.example.myapplication.interfaces.TodoCallback;
-import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.model.TodoNotes;
 import com.example.myapplication.interfaces.TodoNotesAPI;
 import com.example.myapplication.interfaces.TodoNotesDAO;
 

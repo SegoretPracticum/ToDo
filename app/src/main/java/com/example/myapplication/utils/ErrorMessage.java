@@ -1,4 +1,4 @@
-package com.example.myapplication.appmessages;
+package com.example.myapplication.utils;
 
 public enum ErrorMessage {
     CONNECTION_ERROR ("There isn't internet connection"),

@@ -1,6 +1,6 @@
 package com.example.myapplication.interfaces;
 
-import com.example.myapplication.appmessages.ErrorMessage;
+import com.example.myapplication.utils.ErrorMessage;
 
 public interface TodoCallback<T> {
 

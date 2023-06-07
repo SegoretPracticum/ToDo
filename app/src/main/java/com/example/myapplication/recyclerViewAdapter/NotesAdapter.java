@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.model.TodoNotes;
 
 import java.util.ArrayList;
 import java.util.List;

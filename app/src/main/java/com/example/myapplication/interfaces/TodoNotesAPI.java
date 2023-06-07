@@ -1,6 +1,6 @@
 package com.example.myapplication.interfaces;
 
-import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.model.TodoNotes;
 
 import java.io.IOException;
 import java.util.List;

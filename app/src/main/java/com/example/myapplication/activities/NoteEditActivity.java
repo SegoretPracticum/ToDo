@@ -18,7 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.model.TodoNotes;
 import com.example.myapplication.R;
 import com.example.myapplication.data.DBHelperManager;
 import com.example.myapplication.data.TodoListDBHelper;

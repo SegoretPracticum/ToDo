@@ -8,7 +8,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.model.TodoNotes;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
     private final TextView note;

@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.model.TodoNotes;
 import com.example.myapplication.repository.TodoRepository;
 
 public class NoteEditModelFactory implements ViewModelProvider.Factory {

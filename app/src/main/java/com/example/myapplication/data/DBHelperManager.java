@@ -5,7 +5,7 @@ import static com.example.myapplication.repository.TodoRepository.TODOLIST_NUMBE
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.model.TodoNotes;
 import com.example.myapplication.interfaces.TodoNotesDAO;
 
 import java.util.ArrayList;

@@ -3,7 +3,7 @@ package com.example.myapplication.network;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
-import com.example.myapplication.Item.TodoNotes;
+import com.example.myapplication.model.TodoNotes;
 
 import java.io.IOException;
 import java.io.InputStream;
