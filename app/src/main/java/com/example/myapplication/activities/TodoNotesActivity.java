@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.myapplication.model.TodoNotes;
+import com.example.myapplication.R;
+import com.example.myapplication.data.DBHelperManager;
+import com.example.myapplication.data.TodoListDBHelper;
+import com.example.myapplication.data.TodoNotesDBHelper;
+import com.example.myapplication.interfaces.ConnectCheck;
+import com.example.myapplication.interfaces.TodoNotesAPI;
+import com.example.myapplication.interfaces.TodoNotesDAO;
+import com.example.myapplication.network.ConnectChecker;
+import com.example.myapplication.network.HttpConnect;
+import com.example.myapplication.recyclerViewAdapter.NotesAdapter;
+import com.example.myapplication.repository.TodoRepository;
+import com.example.myapplication.viewModels.TodoNotesViewModel;
+import com.example.myapplication.viewModels.TodoNotesViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -26,6 +40,7 @@ public class TodoNotesActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private TodoNotesViewModel viewModel;
     private ConstraintLayout constraintLayout;
+    public final static String NO_ERROR = "no error";
 
     private final ActivityResultLauncher<Intent> noteResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null) {
@@ -66,27 +81,23 @@ public class TodoNotesActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
+        TodoNotesDBHelper todoNotesDBHelper = new TodoNotesDBHelper(getApplicationContext());
+        TodoListDBHelper todoListDBHelper = new TodoListDBHelper(getApplicationContext());
         ConnectCheck connectChecker = new ConnectChecker(getApplicationContext());
-        AppIdentification appIdentification = new AppIdentifier(getApplicationContext());
+        TodoNotesDAO todoNotesDAO = new DBHelperManager(todoNotesDBHelper, todoListDBHelper);
+        TodoNotesAPI todoNotesAPI = new HttpConnect();
+        TodoRepository todoRepository = TodoRepository.getInstance(todoNotesDAO, connectChecker, todoNotesAPI);
         viewModel = new ViewModelProvider(this,
-                new TodoNotesViewModelFactory(connectChecker, appIdentification)).get(TodoNotesViewModel.class);
+                new TodoNotesViewModelFactory(todoRepository)).get(TodoNotesViewModel.class);
         viewModel.getAddTodoEvent().observe(this, this::onButtonClicked);
         viewModel.getEditTodoEvent().observe(this, this::onItemClicked);
         viewModel.getTodoList().observe(this, todoList -> notesAdapter.refreshList(todoList));
-        viewModel.getInternetConnectionError().observe(this, internetConnectionError -> {
-            if (internetConnectionError) {
-                Snackbar snackbar = Snackbar.make(constraintLayout, R.string.internet_connection_snackbar,
+        viewModel.getError().observe(this, error -> {
+            if (!error.equals(NO_ERROR)) {
+                Snackbar snackbar = Snackbar.make(constraintLayout, error,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();
                 viewModel.resetConnectionErrors();
-            }
-        });
-        viewModel.getErrorWorkingWithServer().observe(this, errorOfInternet -> {
-            if (errorOfInternet) {
-                Snackbar snackbar = Snackbar.make(constraintLayout, R.string.failed_server_snackbar,
-                        Snackbar.LENGTH_LONG);
-                snackbar.show();
-                viewModel.resetWorkingServerError();
             }
         });
         viewModel.getRefreshTodoList().observe(this, startRefresh -> {
@@ -95,9 +106,9 @@ public class TodoNotesActivity extends AppCompatActivity {
                 addNote.setVisibility(View.GONE);
                 notesView.setEnabled(false);
             } else {
-                addNote.setVisibility(View.VISIBLE);
                 notesView.setEnabled(true);
                 swipeRefreshLayout.setRefreshing(false);
+                addNote.setVisibility(View.VISIBLE);
             }
         });
     }

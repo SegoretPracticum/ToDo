@@ -1,6 +1,8 @@
-package com.example.myapplication;
+package com.example.myapplication.network;
 
 import android.util.JsonWriter;
+
+import com.example.myapplication.model.TodoNotes;
 
 import java.io.IOException;
 import java.io.OutputStream;

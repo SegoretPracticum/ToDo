@@ -1,6 +1,7 @@
-package com.example.myapplication;
+package com.example.myapplication.activities;
 
-import static com.example.myapplication.TodoNotesActivity.TODO_NOTE;
+import static com.example.myapplication.activities.TodoNotesActivity.NO_ERROR;
+import static com.example.myapplication.activities.TodoNotesActivity.TODO_NOTE;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.model.TodoNotes;
+import com.example.myapplication.R;
+import com.example.myapplication.data.DBHelperManager;
+import com.example.myapplication.data.TodoListDBHelper;
+import com.example.myapplication.data.TodoNotesDBHelper;
+import com.example.myapplication.interfaces.ConnectCheck;
+import com.example.myapplication.interfaces.TodoNotesAPI;
+import com.example.myapplication.interfaces.TodoNotesDAO;
+import com.example.myapplication.network.ConnectChecker;
+import com.example.myapplication.network.HttpConnect;
+import com.example.myapplication.repository.TodoRepository;
+import com.example.myapplication.viewModels.NoteEditModelFactory;
+import com.example.myapplication.viewModels.NoteEditViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 public class NoteEditActivity extends AppCompatActivity {
@@ -84,11 +98,15 @@ public class NoteEditActivity extends AppCompatActivity {
     }
 
     private void viewModelInit() {
+        TodoNotesDBHelper todoNotesDBHelper = new TodoNotesDBHelper(getApplicationContext());
+        TodoListDBHelper todoListDBHelper = new TodoListDBHelper(getApplicationContext());
         ConnectCheck connectChecker = new ConnectChecker(getApplicationContext());
-        AppIdentification appIdentification = new AppIdentifier(getApplicationContext());
+        TodoNotesDAO todoNotesDAO = new DBHelperManager(todoNotesDBHelper, todoListDBHelper);
+        TodoNotesAPI todoNotesAPI = new HttpConnect();
+        TodoRepository todoRepository = TodoRepository.getInstance(todoNotesDAO, connectChecker,todoNotesAPI);
         viewModel = new ViewModelProvider(this,
                 new NoteEditModelFactory(getIntent().getParcelableExtra(TODO_NOTE),
-                        connectChecker, appIdentification)).get(NoteEditViewModel.class);
+                        todoRepository)).get(NoteEditViewModel.class);
         viewModel.getTodoText().observe(this, todoText -> {
             if (!todoText.equals(enterNote.getText().toString())) {
                 enterNote.setText(todoText);
@@ -96,25 +114,9 @@ public class NoteEditActivity extends AppCompatActivity {
         });
         viewModel.getToolbarNavigationEvent().observe(this, onNavigation -> finish());
         viewModel.getSendTodo().observe(this, this::sendTodoNote);
-        viewModel.getEmptyTodoInput().observe(this, todoEmpty -> {
-            if (todoEmpty) {
-                Snackbar snackbar = Snackbar.make(constraintLayout, R.string.note_edit_activity_edit_text_snackbar,
-                        Snackbar.LENGTH_LONG);
-                snackbar.show();
-                viewModel.resetEmptyInputError();
-            }
-        });
-        viewModel.getErrorWorkingWithServer().observe(this, errorOfInternet -> {
-            if (errorOfInternet) {
-                Snackbar snackbar = Snackbar.make(constraintLayout, R.string.failed_server_snackbar,
-                        Snackbar.LENGTH_LONG);
-                snackbar.show();
-                viewModel.resetWorkingServerError();
-            }
-        });
-        viewModel.getInternetConnectionError().observe(this, internetConnectionError -> {
-            if (internetConnectionError) {
-                Snackbar snackbar = Snackbar.make(constraintLayout, R.string.internet_connection_snackbar,
+        viewModel.getError().observe(this, error -> {
+            if (!error.equals(NO_ERROR)) {
+                Snackbar snackbar = Snackbar.make(constraintLayout,error,
                         Snackbar.LENGTH_LONG);
                 snackbar.show();
                 viewModel.resetConnectionErrors();
